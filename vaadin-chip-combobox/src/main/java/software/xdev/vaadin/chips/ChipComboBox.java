@@ -157,7 +157,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	protected void updateSelectedChips()
 	{
 		this.chipsContainer.removeAll();
-		this.chipsContainer.add(this.selectedItems.values().toArray(ChipComponent[]::new));
+		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[] {}));
 	}
 	
 	protected void updateAvailableItems()
