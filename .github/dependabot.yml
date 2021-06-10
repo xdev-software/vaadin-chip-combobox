@@ -19,5 +19,5 @@ updates:
   ignore:
   - dependency-name: "vaadin.version"
     versions: ">=15.0.0"
-  - dependency-name: "org.eclipse.jetty"
+  - dependency-name: "org.eclipse.jetty:jetty-maven-plugin"
     versions: ">=10.0.0"
