@@ -1,6 +1,6 @@
 package software.xdev.vaadin.chips;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -116,7 +116,7 @@ public class SimpleDemo extends HorizontalLayout
 	
 	private void restoreStringDefaults()
 	{
-		this.stringBox.setValue(List.of("Java", "Kotlin", "C#", "Phyton"));
+		this.stringBox.setValue(Arrays.asList("Java", "Kotlin", "C#", "Phyton"));
 	}
 	
 	private void setAvailableIntsRandom()
@@ -136,7 +136,7 @@ public class SimpleDemo extends HorizontalLayout
 	protected void onAttach(final AttachEvent attachEvent)
 	{
 		this.stringBox
-			.withAllAvailableItems(List.of("Java", "TypeScript", "Shell", "JavaScript", "Kotlin", "C#", "Phyton"));
+			.withAllAvailableItems(Arrays.asList("Java", "TypeScript", "Shell", "JavaScript", "Kotlin", "C#", "Phyton"));
 		
 		this.setAvailableIntsRandom();
 		
