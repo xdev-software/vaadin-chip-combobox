@@ -56,5 +56,5 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: demo-files
-        path: vaadin-chip-combobox/target/vaadin-chip-combobox.war
+        path: vaadin-chip-combobox-demo/target/vaadin-chip-combobox-demo.war
         if-no-files-found: error
