@@ -12,11 +12,11 @@
 
 	<name>Chip-ComboBox for Vaadin</name>
 	<description>Chip-ComboBox for Vaadin Flow</description>
-	<url>NEED-URL</url>
+	<url>https://github.com/xdev-software/vaadin-chip-combobox</url>
 
 	<scm>
-		<url>NEED-URL</url>
-		<connection>NEED-URL</connection>
+		<url>https://github.com/xdev-software/vaadin-chip-combobox</url>
+		<connection>https://github.com/xdev-software/vaadin-chip-combobox.git</connection>
 	</scm>
 
 
