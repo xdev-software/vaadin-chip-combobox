@@ -116,7 +116,7 @@ public class SimpleDemo extends HorizontalLayout
 	
 	private void restoreStringDefaults()
 	{
-		this.stringBox.setValue(Arrays.asList("Java", "Kotlin", "C#", "Phyton"));
+		this.stringBox.setValue(Arrays.asList("Java", "Kotlin", "C#", "Python"));
 	}
 	
 	private void setAvailableIntsRandom()
@@ -136,7 +136,7 @@ public class SimpleDemo extends HorizontalLayout
 	protected void onAttach(final AttachEvent attachEvent)
 	{
 		this.stringBox
-			.withAllAvailableItems(Arrays.asList("Java", "TypeScript", "Shell", "JavaScript", "Kotlin", "C#", "Phyton"));
+			.withAllAvailableItems(Arrays.asList("Java", "TypeScript", "Shell", "JavaScript", "Kotlin", "C#", "Python"));
 		
 		this.setAvailableIntsRandom();
 		
