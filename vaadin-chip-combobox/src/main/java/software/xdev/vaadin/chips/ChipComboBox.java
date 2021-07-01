@@ -41,6 +41,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.binder.HasItems;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.shared.Registration;
 
@@ -55,7 +56,8 @@ import com.vaadin.flow.shared.Registration;
 public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	HasValue<ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>, Collection<T>>,
 	HasStyle,
-	HasSize
+	HasSize,
+	HasItems<T>
 {
 	
 	/*
@@ -224,6 +226,11 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		return this;
 	}
 	
+	public ChipComboBox<T> setLabel(final String label)
+	{
+		return this.withLabel(label);
+	}
+	
 	public String getPlaceholder()
 	{
 		return this.cbAvailableItems.getPlaceholder();
@@ -234,6 +241,11 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		Objects.requireNonNull(placeholder);
 		this.cbAvailableItems.setPlaceholder(placeholder);
 		return this;
+	}
+	
+	public ChipComboBox<T> setPlaceholder(final String placeholder)
+	{
+		return this.withPlaceholder(placeholder);
 	}
 	
 	public ChipComboBox<T> withFullComboBoxWidth()
@@ -336,6 +348,14 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	public FlexLayout getChipsContainer()
 	{
 		return this.chipsContainer;
+	}
+
+	@Override
+	public void setItems(final Collection<T> items)
+	{
+		final ArrayList<T> listItems = new ArrayList<>();
+		listItems.addAll(items);
+		this.withAllAvailableItems(listItems, true);
 	}
 	
 }
