@@ -37,7 +37,10 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.ItemLabelGenerator;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -63,7 +66,8 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
 	protected FlexLayout chipsContainer = new FlexLayout();
-
+	protected final Button btnReset = new Button(VaadinIcon.REFRESH.create());
+	
 	/*
 	 * Suppliers / Configuration
 	 */
@@ -88,14 +92,26 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
 		
-		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
 		this.setSizeUndefined();
+		this.btnReset.setSizeUndefined();
 		
-		this.getContent().add(this.cbAvailableItems, this.chipsContainer);
+		this.btnReset.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
+		this.btnReset.getStyle().set("font-size", "var(--lumo-font-size-m)");
+		
+		this.getContent().add(this.cbAvailableItems, this.btnReset, this.chipsContainer);
 		
 		this.cbAvailableItems.addValueChangeListener(this::onCbAvailableItemsValueChanged);
+		this.btnReset.addClickListener(e ->
+		{
+			if(this.isReadOnly())
+			{
+				return;
+			}
+			this.clearAllItems();
+			this.updateUI();
+		});
 	}
 	
 	protected void onCbAvailableItemsValueChanged(final ComponentValueChangeEvent<ComboBox<T>, T> event)
@@ -144,8 +160,14 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		this.selectedItems.put(newItem, chipComponent);
 	}
 	
+	protected void clearAllItems()
+	{
+		this.selectedItems.clear();
+	}
+	
 	/**
 	 * Updates/Rebuilds the UI form the fields
+	 * 
 	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
 	public void updateUI()
@@ -157,7 +179,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	protected void updateSelectedChips()
 	{
 		this.chipsContainer.removeAll();
-		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[] {}));
+		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[]{}));
 	}
 	
 	protected void updateAvailableItems()
@@ -168,7 +190,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// setters + getters  //
+	// setters + getters //
 	///////////////////////
 	
 	public Supplier<ChipComponent> getChipsSupplier()
@@ -228,7 +250,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	{
 		return this.cbAvailableItems.getPlaceholder();
 	}
-
+	
 	public ChipComboBox<T> withPlaceholder(final String placeholder)
 	{
 		Objects.requireNonNull(placeholder);
@@ -253,7 +275,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		}
 		return this;
 	}
-
+	
 	@Override
 	public void setValue(final Collection<T> value)
 	{
@@ -266,7 +288,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		
 		this.updateUI();
 	}
-
+	
 	@Override
 	public Collection<T> getValue()
 	{
@@ -275,62 +297,67 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	protected void fireValueChange(final Collection<T> oldValue, final boolean fromClient)
 	{
-		 ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
+		ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
 	}
-
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public Registration addValueChangeListener(
 		final ValueChangeListener<? super ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>> listener)
 	{
 		@SuppressWarnings("rawtypes")
-		final
-        ComponentEventListener componentListener = event -> {
-            final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent = (ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>) event;
-            listener.valueChanged(valueChangeEvent);
-        };
-        return ComponentUtil.addListener(this,
-                ComponentValueChangeEvent.class, componentListener);
+		final ComponentEventListener componentListener = event ->
+		{
+			final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent =
+				(ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>)event;
+			listener.valueChanged(valueChangeEvent);
+		};
+		return ComponentUtil.addListener(
+			this,
+			ComponentValueChangeEvent.class,
+			componentListener);
 	}
-
+	
 	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
 		this.cbAvailableItems.setReadOnly(readOnly);
 		this.selectedItems.values().forEach(comp -> comp.setReadonly(readOnly));
 	}
-
+	
 	@Override
 	public boolean isReadOnly()
 	{
 		return this.cbAvailableItems.isReadOnly();
 	}
-
+	
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
 	}
-
+	
 	@Override
 	public boolean isRequiredIndicatorVisible()
 	{
 		return this.cbAvailableItems.isRequiredIndicatorVisible();
 	}
-
+	
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public ComboBox<T> getCbAvailableItems()
 	{
 		return this.cbAvailableItems;
 	}
-
+	
 	/**
 	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/>
 	 * NOTE: If the contents of the {@link FlexLayout} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public FlexLayout getChipsContainer()
