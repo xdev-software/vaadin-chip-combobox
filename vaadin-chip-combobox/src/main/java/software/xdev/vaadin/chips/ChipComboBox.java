@@ -64,12 +64,12 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
 	protected FlexLayout chipsContainer = new FlexLayout();
-
+	
 	/*
 	 * Suppliers / Configuration
 	 */
 	protected Supplier<ChipComponent> chipsSupplier = ChipComponent::new;
-	protected ItemLabelGenerator<T> itemLabelGenerator = Object::toString;
+	protected ItemLabelGenerator<T> chipItemLabelGenerator = Object::toString;
 	
 	/*
 	 * Fields
@@ -89,7 +89,6 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
 		
-		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
 		this.setSizeUndefined();
@@ -97,6 +96,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		this.getContent().add(this.cbAvailableItems, this.chipsContainer);
 		
 		this.cbAvailableItems.addValueChangeListener(this::onCbAvailableItemsValueChanged);
+		this.cbAvailableItems.setItemLabelGenerator(this.comboBoxItemLabelGenerator);
 	}
 	
 	protected void onCbAvailableItemsValueChanged(final ComponentValueChangeEvent<ComboBox<T>, T> event)
@@ -123,7 +123,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	{
 		final ChipComponent chipComponent = this.chipsSupplier.get();
 		
-		chipComponent.withLabelText(this.itemLabelGenerator.apply(newItem));
+		chipComponent.withLabelText(this.chipItemLabelGenerator.apply(newItem));
 		
 		chipComponent.addBtnDeleteClickListener(ev ->
 		{
@@ -147,6 +147,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	/**
 	 * Updates/Rebuilds the UI form the fields
+	 * 
 	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
 	public void updateUI()
@@ -158,7 +159,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	protected void updateSelectedChips()
 	{
 		this.chipsContainer.removeAll();
-		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[] {}));
+		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[]{}));
 	}
 	
 	protected void updateAvailableItems()
@@ -169,7 +170,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// setters + getters  //
+	// setters + getters //
 	///////////////////////
 	
 	public Supplier<ChipComponent> getChipsSupplier()
@@ -229,7 +230,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	{
 		return this.cbAvailableItems.getPlaceholder();
 	}
-
+	
 	public ChipComboBox<T> withPlaceholder(final String placeholder)
 	{
 		Objects.requireNonNull(placeholder);
@@ -254,7 +255,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		}
 		return this;
 	}
-
+	
 	@Override
 	public void setValue(final Collection<T> value)
 	{
@@ -267,7 +268,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		
 		this.updateUI();
 	}
-
+	
 	@Override
 	public Collection<T> getValue()
 	{
@@ -276,62 +277,67 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	protected void fireValueChange(final Collection<T> oldValue, final boolean fromClient)
 	{
-		 ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
+		ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
 	}
-
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public Registration addValueChangeListener(
 		final ValueChangeListener<? super ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>> listener)
 	{
 		@SuppressWarnings("rawtypes")
-		final
-        ComponentEventListener componentListener = event -> {
-            final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent = (ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>) event;
-            listener.valueChanged(valueChangeEvent);
-        };
-        return ComponentUtil.addListener(this,
-                ComponentValueChangeEvent.class, componentListener);
+		final ComponentEventListener componentListener = event ->
+		{
+			final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent =
+				(ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>)event;
+			listener.valueChanged(valueChangeEvent);
+		};
+		return ComponentUtil.addListener(
+			this,
+			ComponentValueChangeEvent.class,
+			componentListener);
 	}
-
+	
 	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
 		this.cbAvailableItems.setReadOnly(readOnly);
 		this.selectedItems.values().forEach(comp -> comp.setReadonly(readOnly));
 	}
-
+	
 	@Override
 	public boolean isReadOnly()
 	{
 		return this.cbAvailableItems.isReadOnly();
 	}
-
+	
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
 	}
-
+	
 	@Override
 	public boolean isRequiredIndicatorVisible()
 	{
 		return this.cbAvailableItems.isRequiredIndicatorVisible();
 	}
-
+	
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public ComboBox<T> getCbAvailableItems()
 	{
 		return this.cbAvailableItems;
 	}
-
+	
 	/**
 	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/>
 	 * NOTE: If the contents of the {@link FlexLayout} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public FlexLayout getChipsContainer()
@@ -339,14 +345,29 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		return this.chipsContainer;
 	}
 	
-	public void setComboboxItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	public ItemLabelGenerator<T> getComboBoxItemLabelGenerator()
 	{
-		this.itemLabelGenerator = generator;
+		return this.cbAvailableItems.getItemLabelGenerator();
+	}
+	
+	public void setComboBoxItemLabelGenerator(final ItemLabelGenerator<T> comboBoxItemLabelGenerator)
+	{
+		this.cbAvailableItems.setItemLabelGenerator(comboBoxItemLabelGenerator);
+	}
+	
+	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.chipItemLabelGenerator = generator;
+	}
+	
+	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.chipItemLabelGenerator = generator;
+		this.cbAvailableItems.setItemLabelGenerator(generator);
 	}
 	
 	public void setComboboxRenderer(final Renderer<T> renderer)
 	{
 		this.cbAvailableItems.setRenderer(renderer);
 	}
-	
 }
