@@ -41,7 +41,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.shared.Registration;
 
@@ -380,10 +379,5 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	{
 		this.setComboBoxItemLabelGenerator(generator);
 		this.setChipItemLabelGenerator(generator);
-	}
-	
-	public void setComboboxRenderer(final Renderer<T> renderer)
-	{
-		this.cbAvailableItems.setRenderer(renderer);
 	}
 }
