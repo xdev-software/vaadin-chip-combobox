@@ -41,6 +41,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -66,6 +67,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
 	protected FlexLayout chipsContainer = new FlexLayout();
+	protected FlexLayout comboboxContainer = new FlexLayout();
 	protected final Button btnReset = new Button(VaadinIcon.REFRESH.create());
 	
 	/*
@@ -91,16 +93,20 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		final Style chipsContainerStyle = this.chipsContainer.getStyle();
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
+
+		this.comboboxContainer.setAlignItems(Alignment.BASELINE);
 		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
 		this.setSizeUndefined();
 		this.btnReset.setSizeUndefined();
 		
+		this.comboboxContainer.add(this.cbAvailableItems, this.btnReset);
+		
 		this.btnReset.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
 		this.btnReset.getStyle().set("font-size", "var(--lumo-font-size-m)");
 		
-		this.getContent().add(this.cbAvailableItems, this.btnReset, this.chipsContainer);
+		this.getContent().add(this.comboboxContainer, this.chipsContainer);
 		
 		this.cbAvailableItems.addValueChangeListener(this::onCbAvailableItemsValueChanged);
 		this.btnReset.addClickListener(e ->
@@ -162,7 +168,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	protected void clearAllItems()
 	{
-		this.selectedItems.clear();
+		this.setValue(new ArrayList<>());
 	}
 	
 	/**
