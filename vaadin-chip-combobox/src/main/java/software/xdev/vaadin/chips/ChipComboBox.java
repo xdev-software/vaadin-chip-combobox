@@ -346,6 +346,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	/**
 	 * Returns the item label generator used by the {@link ComboBox}.
+	 * 
 	 * @return
 	 */
 	public ItemLabelGenerator<T> getComboBoxItemLabelGenerator()
@@ -355,6 +356,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	/**
 	 * Sets the item label generator used by the {@link ComboBox}.
+	 * 
 	 * @return
 	 */
 	public void setComboBoxItemLabelGenerator(final ItemLabelGenerator<T> comboBoxItemLabelGenerator)
@@ -364,6 +366,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	/**
 	 * Sets the item label generator used by the individual {@link ChipComponent}s.
+	 * 
 	 * @return
 	 */
 	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
@@ -372,7 +375,9 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	}
 	
 	/**
-	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the {@link ChipComponent}s.
+	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
+	 * {@link ChipComponent}s.
+	 * 
 	 * @return
 	 */
 	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
