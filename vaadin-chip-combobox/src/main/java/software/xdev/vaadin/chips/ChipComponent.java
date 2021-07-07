@@ -1,5 +1,7 @@
 package software.xdev.vaadin.chips;
 
+import com.vaadin.flow.component.AttachEvent;
+
 /*-
  * #%L
  * ChipComboBox for Vaadin
@@ -25,6 +27,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Label;
@@ -40,15 +43,20 @@ import com.vaadin.flow.shared.Registration;
  * @author DL
  * @author AB
  */
-public class ChipComponent extends Composite<HorizontalLayout> implements
+public class ChipComponent<T> extends Composite<HorizontalLayout> implements
 	HasStyle,
 	HasSize
 {
+	protected T item;
+	protected ItemLabelGenerator<T> itemLabelGenerator = Object::toString;
+	
 	protected final Button btnDelete = new Button(VaadinIcon.CLOSE_CIRCLE.create());
 	protected final Label label = new Label();
 	
-	public ChipComponent()
+	public ChipComponent(final T item)
 	{
+		this.item = item;
+		
 		this.initUI();
 	}
 	
@@ -74,11 +82,29 @@ public class ChipComponent extends Composite<HorizontalLayout> implements
 		this.getContent().add(this.label, this.btnDelete);
 	}
 	
-	public void withLabelText(final String text)
+	@Override
+	protected void onAttach(final AttachEvent attachEvent)
 	{
-		this.label.setText(text);
+		this.updateTextFromItemLabelGenerator();
 	}
 	
+	
+
+	public T getItem()
+	{
+		return this.item;
+	}
+
+	public void setItemLabelGenerator(final ItemLabelGenerator<T> itemLabelGenerator)
+	{
+		this.itemLabelGenerator = itemLabelGenerator;
+	}
+	
+	public void updateTextFromItemLabelGenerator()
+	{
+		this.label.setText(this.itemLabelGenerator.apply(this.item));
+	}
+
 	public Registration addBtnDeleteClickListener(final ComponentEventListener<ClickEvent<Button>> listener)
 	{
 		return this.btnDelete.addClickListener(listener);

@@ -22,27 +22,23 @@ package software.xdev.vaadin.chips;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.binder.HasItems;
 import com.vaadin.flow.dom.Style;
-import com.vaadin.flow.shared.Registration;
 
 
 /**
@@ -52,8 +48,8 @@ import com.vaadin.flow.shared.Registration;
  * @author DL
  * @author AB
  */
-public class ChipComboBox<T> extends Composite<VerticalLayout> implements
-	HasValue<ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>, Collection<T>>,
+public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
+	HasItems<T>,
 	HasStyle,
 	HasSize
 {
@@ -67,21 +63,22 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	/*
 	 * Suppliers / Configuration
 	 */
-	protected Supplier<ChipComponent> chipsSupplier = ChipComponent::new;
+	protected Function<T, ChipComponent<T>> chipsSupplier = ChipComponent::new;
 	protected ItemLabelGenerator<T> itemLabelGenerator = Object::toString;
 	
 	/*
 	 * Fields
 	 */
-	protected List<T> allAvailableItems = new ArrayList<>();
-	
-	protected Map<T, ChipComponent> selectedItems = new LinkedHashMap<>();
+	protected final List<T> allAvailableItems = new ArrayList<>();
+	protected final List<ChipComponent<T>> selectedComponents = new ArrayList<>();
 	
 	public ChipComboBox()
 	{
+		super(Collections.emptyList());
+		
 		this.initUI();
 	}
-	
+
 	protected void initUI()
 	{
 		final Style chipsContainerStyle = this.chipsContainer.getStyle();
@@ -100,55 +97,76 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	protected void onCbAvailableItemsValueChanged(final ComponentValueChangeEvent<ComboBox<T>, T> event)
 	{
-		if(event.getValue() == null)
-		{
-			return;
-		}
-		if(this.isReadOnly())
+		if(event.getValue() == null || this.isReadOnly())
 		{
 			return;
 		}
 		
-		final Collection<T> oldValues = new LinkedHashSet<>(this.selectedItems.keySet());
+		this.addItem(event.getValue());
+	}
+	
+	@Override
+	protected void setPresentationValue(final Collection<T> newPresentationValue)
+	{
+		/*
+		 * Update the component list
+		 */
 		
-		this.addNewItem(event.getValue());
+		// Remove components
+		this.selectedComponents
+			.removeIf(comp -> !newPresentationValue.contains(comp.getItem()));
 		
-		this.fireValueChange(oldValues, event.isFromClient());
+		// Find new values and build components
+		// @formatter:off
+		final Collection<T> existingValues =
+			this.selectedComponents.stream()
+				.map(ChipComponent::getItem)
+				.collect(Collectors.toList());
+		
+		newPresentationValue.stream()
+			.filter(v -> !existingValues.contains(v))
+			.map(item ->
+			{
+				final ChipComponent<T> chipComponent = this.chipsSupplier.apply(item);
+				chipComponent.setItemLabelGenerator(this.itemLabelGenerator);
+				chipComponent.addBtnDeleteClickListener(ev ->
+				{
+					if(this.isReadOnly())
+					{
+						return;
+					}
+					
+					this.removeItem(item);
+				});
+				return chipComponent;
+			})
+			.forEach(this.selectedComponents::add);
+		// @formatter:on
+		
 		
 		this.updateUI();
 	}
 	
-	protected void addNewItem(final T newItem)
+	
+	protected void addItem(final T item)
 	{
-		final ChipComponent chipComponent = this.chipsSupplier.get();
-		
-		chipComponent.withLabelText(this.itemLabelGenerator.apply(newItem));
-		
-		chipComponent.addBtnDeleteClickListener(ev ->
-		{
-			if(this.isReadOnly())
-			{
-				return;
-			}
-			
-			final Collection<T> oldValues = new LinkedHashSet<>(this.selectedItems.keySet());
-			if(this.selectedItems.remove(newItem) != null)
-			{
-				// Only update when value was removed
-				this.updateUI();
-				
-				this.fireValueChange(oldValues, ev.isFromClient());
-			}
-		});
-		
-		this.selectedItems.put(newItem, chipComponent);
+		final List<T> values = new ArrayList<>(this.getValue());
+		values.add(item);
+		this.setValue(values);
 	}
+	
+	protected void removeItem(final T item)
+	{
+		final List<T> values = new ArrayList<>(this.getValue());
+		values.remove(item);
+		this.setValue(values);
+	}
+	
 	
 	/**
 	 * Updates/Rebuilds the UI form the fields
-	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
-	public void updateUI()
+	protected void updateUI()
 	{
 		this.updateSelectedChips();
 		this.updateAvailableItems();
@@ -157,13 +175,13 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	protected void updateSelectedChips()
 	{
 		this.chipsContainer.removeAll();
-		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[] {}));
+		this.chipsContainer.add(this.selectedComponents.toArray(new ChipComponent[] {}));
 	}
 	
 	protected void updateAvailableItems()
 	{
 		final List<T> availableItems = new ArrayList<>(this.allAvailableItems);
-		availableItems.removeAll(this.selectedItems.keySet());
+		availableItems.removeAll(this.getValue());
 		this.cbAvailableItems.setItems(availableItems);
 	}
 	
@@ -171,12 +189,12 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	// setters + getters  //
 	///////////////////////
 	
-	public Supplier<ChipComponent> getChipsSupplier()
+	public Function<T, ChipComponent<T>> getChipsSupplier()
 	{
 		return this.chipsSupplier;
 	}
 	
-	public ChipComboBox<T> withChipsSupplier(final Supplier<ChipComponent> chipsSupplier)
+	public ChipComboBox<T> withChipsSupplier(final Function<T, ChipComponent<T>> chipsSupplier)
 	{
 		this.chipsSupplier = chipsSupplier;
 		return this;
@@ -186,30 +204,27 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	{
 		return new ArrayList<>(this.allAvailableItems);
 	}
-	
-	public ChipComboBox<T> withAllAvailableItems(final List<T> allAvailableItems)
-	{
-		return this.withAllAvailableItems(allAvailableItems, true);
-	}
-	
-	public ChipComboBox<T> withAllAvailableItems(final List<T> allAvailableItems, final boolean updateUI)
-	{
-		Objects.requireNonNull(allAvailableItems);
-		this.allAvailableItems.clear();
-		this.allAvailableItems.addAll(allAvailableItems);
 		
-		final Collection<T> oldValues = new LinkedHashSet<>(this.selectedItems.keySet());
-		if(this.selectedItems.keySet().removeIf(item -> !this.allAvailableItems.contains(item)))
-		{
-			this.fireValueChange(oldValues, false);
-		}
-		
-		if(updateUI)
-		{
-			this.updateUI();
-		}
+	public ChipComboBox<T> withAllAvailableItems(final Collection<T> allAvailableItems)
+	{
+		this.setItems(allAvailableItems);
 		
 		return this;
+	}
+	
+	@Override
+	public void setItems(final Collection<T> items)
+	{
+		Objects.requireNonNull(items);
+		this.allAvailableItems.clear();
+		this.allAvailableItems.addAll(items);
+		
+		// Remove selected values that are not in allAvailableItems
+		final Collection<T> values = new ArrayList<>(this.getValue());
+		values.removeIf(v -> !this.allAvailableItems.contains(v));
+		this.setValue(values);
+		
+		this.updateUI();
 	}
 	
 	public String getLabel()
@@ -255,67 +270,20 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	}
 
 	@Override
-	public void setValue(final Collection<T> value)
-	{
-		final Collection<T> oldValues = new LinkedHashSet<>(this.selectedItems.keySet());
-		
-		this.selectedItems.clear();
-		value.forEach(this::addNewItem);
-		
-		this.fireValueChange(oldValues, false);
-		
-		this.updateUI();
-	}
-
-	@Override
-	public Collection<T> getValue()
-	{
-		return new LinkedHashSet<>(this.selectedItems.keySet());
-	}
-	
-	protected void fireValueChange(final Collection<T> oldValue, final boolean fromClient)
-	{
-		 ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Registration addValueChangeListener(
-		final ValueChangeListener<? super ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>> listener)
-	{
-		@SuppressWarnings("rawtypes")
-		final
-        ComponentEventListener componentListener = event -> {
-            final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent = (ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>) event;
-            listener.valueChanged(valueChangeEvent);
-        };
-        return ComponentUtil.addListener(this,
-                ComponentValueChangeEvent.class, componentListener);
-	}
-
-	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
+		super.setReadOnly(readOnly);
+		
 		this.cbAvailableItems.setReadOnly(readOnly);
-		this.selectedItems.values().forEach(comp -> comp.setReadonly(readOnly));
-	}
-
-	@Override
-	public boolean isReadOnly()
-	{
-		return this.cbAvailableItems.isReadOnly();
+		this.selectedComponents.forEach(comp -> comp.setReadonly(readOnly));
 	}
 
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
+		super.setRequiredIndicatorVisible(requiredIndicatorVisible);
+		
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
-	}
-
-	@Override
-	public boolean isRequiredIndicatorVisible()
-	{
-		return this.cbAvailableItems.isRequiredIndicatorVisible();
 	}
 
 	/**
@@ -337,5 +305,4 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	{
 		return this.chipsContainer;
 	}
-	
 }
