@@ -77,6 +77,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		super(Collections.emptyList());
 		
 		this.initUI();
+		this.initListeners();
 	}
 
 	protected void initUI()
@@ -91,7 +92,10 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.setSizeUndefined();
 		
 		this.getContent().add(this.cbAvailableItems, this.chipsContainer);
-		
+	}
+	
+	protected void initListeners()
+	{
 		this.cbAvailableItems.addValueChangeListener(this::onCbAvailableItemsValueChanged);
 	}
 	
@@ -102,7 +106,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 			return;
 		}
 		
-		this.addItem(event.getValue());
+		this.addItem(event.getValue(), event.isFromClient());
 	}
 	
 	@Override
@@ -136,7 +140,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 						return;
 					}
 					
-					this.removeItem(item);
+					this.removeItem(item, ev.isFromClient());
 				});
 				return chipComponent;
 			})
@@ -148,18 +152,18 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	}
 	
 	
-	protected void addItem(final T item)
+	protected void addItem(final T item, final boolean isFromClient)
 	{
 		final List<T> values = new ArrayList<>(this.getValue());
 		values.add(item);
-		this.setValue(values);
+		this.setModelValue(values, isFromClient);
 	}
 	
-	protected void removeItem(final T item)
+	protected void removeItem(final T item, final boolean isFromClient)
 	{
 		final List<T> values = new ArrayList<>(this.getValue());
 		values.remove(item);
-		this.setValue(values);
+		this.setModelValue(values, isFromClient);
 	}
 	
 	
@@ -222,7 +226,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		// Remove selected values that are not in allAvailableItems
 		final Collection<T> values = new ArrayList<>(this.getValue());
 		values.removeIf(v -> !this.allAvailableItems.contains(v));
-		this.setValue(values);
+		this.setModelValue(values, false);
 		
 		this.updateUI();
 	}
