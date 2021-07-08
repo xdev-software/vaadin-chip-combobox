@@ -65,7 +65,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
 	protected FlexLayout chipsContainer = new FlexLayout();
-
+	
 	/*
 	 * Suppliers / Configuration
 	 */
@@ -89,7 +89,6 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		final Style chipsContainerStyle = this.chipsContainer.getStyle();
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
-		
 		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
@@ -148,6 +147,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	/**
 	 * Updates/Rebuilds the UI form the fields
+	 * 
 	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
 	public void updateUI()
@@ -159,7 +159,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	protected void updateSelectedChips()
 	{
 		this.chipsContainer.removeAll();
-		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[] {}));
+		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[]{}));
 	}
 	
 	protected void updateAvailableItems()
@@ -170,7 +170,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// setters + getters  //
+	// setters + getters //
 	///////////////////////
 	
 	public Supplier<ChipComponent> getChipsSupplier()
@@ -214,6 +214,12 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		return this;
 	}
 	
+	@Override
+	public void setItems(final Collection<T> items)
+	{
+		this.withAllAvailableItems(new ArrayList<>(items), true);
+	}
+	
 	public String getLabel()
 	{
 		return this.cbAvailableItems.getLabel();
@@ -221,31 +227,31 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	public ChipComboBox<T> withLabel(final String label)
 	{
-		Objects.requireNonNull(label);
-		this.cbAvailableItems.setLabel(label);
+		this.setLabel(label);
 		return this;
 	}
 	
-	public ChipComboBox<T> setLabel(final String label)
+	public void setLabel(final String label)
 	{
-		return this.withLabel(label);
+		Objects.requireNonNull(label);
+		this.cbAvailableItems.setLabel(label);
 	}
 	
 	public String getPlaceholder()
 	{
 		return this.cbAvailableItems.getPlaceholder();
 	}
-
+	
 	public ChipComboBox<T> withPlaceholder(final String placeholder)
 	{
-		Objects.requireNonNull(placeholder);
-		this.cbAvailableItems.setPlaceholder(placeholder);
+		this.setPlaceholder(placeholder);
 		return this;
 	}
 	
-	public ChipComboBox<T> setPlaceholder(final String placeholder)
+	public void setPlaceholder(final String placeholder)
 	{
-		return this.withPlaceholder(placeholder);
+		Objects.requireNonNull(placeholder);
+		this.cbAvailableItems.setPlaceholder(placeholder);
 	}
 	
 	public ChipComboBox<T> withFullComboBoxWidth()
@@ -265,7 +271,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		}
 		return this;
 	}
-
+	
 	@Override
 	public void setValue(final Collection<T> value)
 	{
@@ -278,7 +284,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		
 		this.updateUI();
 	}
-
+	
 	@Override
 	public Collection<T> getValue()
 	{
@@ -287,75 +293,72 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	protected void fireValueChange(final Collection<T> oldValue, final boolean fromClient)
 	{
-		 ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
+		ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
 	}
-
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public Registration addValueChangeListener(
 		final ValueChangeListener<? super ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>> listener)
 	{
 		@SuppressWarnings("rawtypes")
-		final
-        ComponentEventListener componentListener = event -> {
-            final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent = (ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>) event;
-            listener.valueChanged(valueChangeEvent);
-        };
-        return ComponentUtil.addListener(this,
-                ComponentValueChangeEvent.class, componentListener);
+		final ComponentEventListener componentListener = event ->
+		{
+			final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent =
+				(ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>)event;
+			listener.valueChanged(valueChangeEvent);
+		};
+		return ComponentUtil.addListener(
+			this,
+			ComponentValueChangeEvent.class,
+			componentListener);
 	}
-
+	
 	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
 		this.cbAvailableItems.setReadOnly(readOnly);
 		this.selectedItems.values().forEach(comp -> comp.setReadonly(readOnly));
 	}
-
+	
 	@Override
 	public boolean isReadOnly()
 	{
 		return this.cbAvailableItems.isReadOnly();
 	}
-
+	
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
 	}
-
+	
 	@Override
 	public boolean isRequiredIndicatorVisible()
 	{
 		return this.cbAvailableItems.isRequiredIndicatorVisible();
 	}
-
+	
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public ComboBox<T> getCbAvailableItems()
 	{
 		return this.cbAvailableItems;
 	}
-
+	
 	/**
 	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/>
 	 * NOTE: If the contents of the {@link FlexLayout} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public FlexLayout getChipsContainer()
 	{
 		return this.chipsContainer;
-	}
-
-	@Override
-	public void setItems(final Collection<T> items)
-	{
-		final ArrayList<T> listItems = new ArrayList<>();
-		listItems.addAll(items);
-		this.withAllAvailableItems(listItems, true);
 	}
 	
 }
