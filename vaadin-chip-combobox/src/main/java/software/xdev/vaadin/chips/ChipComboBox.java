@@ -95,7 +95,6 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		this.getContent().add(this.cbAvailableItems, this.chipsContainer);
 		
 		this.cbAvailableItems.addValueChangeListener(this::onCbAvailableItemsValueChanged);
-		this.cbAvailableItems.setItemLabelGenerator(Object::toString);
 	}
 	
 	protected void onCbAvailableItemsValueChanged(final ComponentValueChangeEvent<ComboBox<T>, T> event)
@@ -237,6 +236,53 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		return this;
 	}
 	
+	/**
+	 * Sets the item label generator used by the individual {@link ChipComponent}s.
+	 * 
+	 * @return
+	 */
+	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.chipItemLabelGenerator = generator;
+	}
+	
+	/**
+	 * Sets the item label generator used by the individual {@link ChipComponent}s. Equal to setChipItemLabelGenerator,
+	 * but allows in-line usage for easier component creation.
+	 * 
+	 * @return this
+	 */
+	public ChipComboBox<T> withChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.setChipItemLabelGenerator(generator);
+		return this;
+	}
+	
+	/**
+	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
+	 * {@link ChipComponent}s.
+	 * 
+	 * @return
+	 */
+	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.cbAvailableItems.setItemLabelGenerator(generator);
+		this.setChipItemLabelGenerator(generator);
+	}
+	
+	/**
+	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
+	 * {@link ChipComponent}s. Identical with setItemLabelGenerator, but allows in-line usage for easier component
+	 * creation.
+	 * 
+	 * @return this
+	 */
+	public ChipComboBox<T> withItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.setItemLabelGenerator(generator);
+		return this;
+	}
+	
 	public ChipComboBox<T> withFullComboBoxWidth()
 	{
 		return this.withFullComboBoxWidth(true);
@@ -285,16 +331,13 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		final ValueChangeListener<? super ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>> listener)
 	{
 		@SuppressWarnings("rawtypes")
-		final ComponentEventListener componentListener = event ->
-		{
-			final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent =
-				(ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>)event;
+		//@formatter:off
+		final ComponentEventListener componentListener = event -> {
+			final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent = (ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>) event;
 			listener.valueChanged(valueChangeEvent);
 		};
-		return ComponentUtil.addListener(
-			this,
-			ComponentValueChangeEvent.class,
-			componentListener);
+		return ComponentUtil.addListener(this, ComponentValueChangeEvent.class, componentListener);
+		//@formatter:on
 	}
 	
 	@Override
@@ -344,45 +387,4 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		return this.chipsContainer;
 	}
 	
-	/**
-	 * Returns the item label generator used by the {@link ComboBox}.
-	 * 
-	 * @return
-	 */
-	public ItemLabelGenerator<T> getComboBoxItemLabelGenerator()
-	{
-		return this.cbAvailableItems.getItemLabelGenerator();
-	}
-	
-	/**
-	 * Sets the item label generator used by the {@link ComboBox}.
-	 * 
-	 * @return
-	 */
-	public void setComboBoxItemLabelGenerator(final ItemLabelGenerator<T> comboBoxItemLabelGenerator)
-	{
-		this.cbAvailableItems.setItemLabelGenerator(comboBoxItemLabelGenerator);
-	}
-	
-	/**
-	 * Sets the item label generator used by the individual {@link ChipComponent}s.
-	 * 
-	 * @return
-	 */
-	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
-	{
-		this.chipItemLabelGenerator = generator;
-	}
-	
-	/**
-	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
-	 * {@link ChipComponent}s.
-	 * 
-	 * @return
-	 */
-	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
-	{
-		this.setComboBoxItemLabelGenerator(generator);
-		this.setChipItemLabelGenerator(generator);
-	}
 }
