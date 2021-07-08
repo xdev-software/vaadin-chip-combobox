@@ -261,6 +261,12 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	public ChipComboBox<T> withFullComboBoxWidth(final boolean useFullWidth)
 	{
+		this.setFullComboBoxWidth(useFullWidth);
+		return this;
+	}
+	
+	public void setFullComboBoxWidth(final boolean useFullWidth)
+	{
 		if(useFullWidth)
 		{
 			this.cbAvailableItems.setWidthFull();
@@ -269,7 +275,6 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		{
 			this.cbAvailableItems.setWidth(null);
 		}
-		return this;
 	}
 	
 	@Override
