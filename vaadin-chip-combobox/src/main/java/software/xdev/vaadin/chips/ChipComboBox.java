@@ -34,6 +34,7 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -147,7 +148,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 			.forEach(this.selectedComponents::add);
 		// @formatter:on
 		
-		
 		this.updateUI();
 	}
 	
@@ -156,14 +156,37 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	{
 		final List<T> values = new ArrayList<>(this.getValue());
 		values.add(item);
-		this.setModelValue(values, isFromClient);
+		this.updateValues(values, isFromClient);
 	}
 	
 	protected void removeItem(final T item, final boolean isFromClient)
 	{
 		final List<T> values = new ArrayList<>(this.getValue());
 		values.remove(item);
-		this.setModelValue(values, isFromClient);
+		this.updateValues(values, isFromClient);
+	}
+	
+	/**
+	 * Updates the underlying values (if the newValues doesn't equals the oldValue)
+	 * @implNote
+	 * This is a "workaround" for <a href="https://github.com/vaadin/flow/issues/11392">vaadin/flow#11392</a><br/>
+	 * The following behaviors may be unexpected:
+	 * <ul>
+	 * 	<li>The {@link ValueChangeEvent} is fired before the UI is updated</li>
+	 * 	<li>Internal management in {@link AbstractFieldSupport} like <code>presentationUpdateInProgress</code> are not implemented</li>
+	 * </ul>
+	 * @param newValues
+	 * @param isFromClient
+	 */
+	protected void updateValues(final Collection<T> newValues, final boolean isFromClient)
+	{
+		final Collection<T> oldValue = this.getValue();
+		this.setModelValue(newValues, isFromClient);
+		
+		if(!this.valueEquals(oldValue, newValues))
+		{
+			this.setPresentationValue(newValues);
+		}
 	}
 	
 	
@@ -187,6 +210,21 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		final List<T> availableItems = new ArrayList<>(this.allAvailableItems);
 		availableItems.removeAll(this.getValue());
 		this.cbAvailableItems.setItems(availableItems);
+	}
+	
+	@Override
+	public void setItems(final Collection<T> items)
+	{
+		Objects.requireNonNull(items);
+		this.allAvailableItems.clear();
+		this.allAvailableItems.addAll(items);
+		
+		// Remove selected values that are not in allAvailableItems
+		final Collection<T> values = new ArrayList<>(this.getValue());
+		values.removeIf(v -> !this.allAvailableItems.contains(v));
+		this.updateValues(values, false);
+		
+		this.updateUI();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
@@ -214,21 +252,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.setItems(allAvailableItems);
 		
 		return this;
-	}
-	
-	@Override
-	public void setItems(final Collection<T> items)
-	{
-		Objects.requireNonNull(items);
-		this.allAvailableItems.clear();
-		this.allAvailableItems.addAll(items);
-		
-		// Remove selected values that are not in allAvailableItems
-		final Collection<T> values = new ArrayList<>(this.getValue());
-		values.removeIf(v -> !this.allAvailableItems.contains(v));
-		this.setModelValue(values, false);
-		
-		this.updateUI();
 	}
 	
 	public String getLabel()
