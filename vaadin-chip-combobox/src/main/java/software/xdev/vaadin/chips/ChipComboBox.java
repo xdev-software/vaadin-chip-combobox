@@ -173,7 +173,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * The following behaviors may be unexpected:
 	 * <ul>
 	 * 	<li>The {@link ValueChangeEvent} is fired before the UI is updated</li>
-	 * 	<li>Internal management in {@link AbstractFieldSupport} like <code>presentationUpdateInProgress</code> are not implemented</li>
+	 * 	<li>No internal data management like in {@link AbstractFieldSupport}</li>
 	 * </ul>
 	 * @param newValues
 	 * @param isFromClient
