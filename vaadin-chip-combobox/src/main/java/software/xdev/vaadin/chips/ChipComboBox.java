@@ -52,7 +52,8 @@ import com.vaadin.flow.dom.Style;
 public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
 	HasItems<T>,
 	HasStyle,
-	HasSize
+	HasSize,
+	HasItems<T>
 {
 	
 	/*
@@ -60,12 +61,12 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
 	protected FlexLayout chipsContainer = new FlexLayout();
-
+	
 	/*
 	 * Suppliers / Configuration
 	 */
 	protected Function<T, ChipComponent<T>> chipsSupplier = ChipComponent::new;
-	protected ItemLabelGenerator<T> itemLabelGenerator = Object::toString;
+	protected ItemLabelGenerator<T> chipItemLabelGenerator = Object::toString;
 	
 	/*
 	 * Fields
@@ -86,7 +87,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		final Style chipsContainerStyle = this.chipsContainer.getStyle();
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
-		
 		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
@@ -192,6 +192,8 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Updates/Rebuilds the UI form the fields
+	 * 
+	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
 	protected void updateUI()
 	{
@@ -228,20 +230,51 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// setters + getters  //
+	// setters + getters //
 	///////////////////////
 	
+	/*
+	 * Chips Supplier
+	 */
+	
+	/**
+	 * Returns the current supplier for creating new {@link ChipComponent ChipComponents}
+	 * @return the current supplier for creating new {@link ChipComponent ChipComponents}
+	 */
 	public Function<T, ChipComponent<T>> getChipsSupplier()
 	{
 		return this.chipsSupplier;
 	}
 	
+	/**
+	 * @see ChipComboBox#setChipsSupplier(Supplier)
+	 * 
+	 * @param chipsSupplier
+	 * @return the component itself
+	 */
 	public ChipComboBox<T> withChipsSupplier(final Function<T, ChipComponent<T>> chipsSupplier)
 	{
-		this.chipsSupplier = chipsSupplier;
+		this.setChipsSupplier(chipsSupplier);
 		return this;
 	}
 	
+	/**
+	 * Sets the supplier for creating new {@link ChipComponent ChipComponents}
+	 * @param chipsSupplier supplier for creating new {@link ChipComponent ChipComponents}
+	 */
+	public void setChipsSupplier(final Function<T, ChipComponent<T>> chipsSupplier)
+	{
+		this.chipsSupplier = Objects.requireNonNull(chipsSupplier);
+	}
+	
+	/*
+	 * All available items
+	 */
+	
+	/**
+	 * Get all available items, that can potentially get selected
+	 * @return
+	 */
 	public List<T> getAllAvailableItems()
 	{
 		return new ArrayList<>(this.allAvailableItems);
@@ -254,6 +287,21 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see ChipComboBox#withAllAvailableItems(List)
+	 */
+	@Override
+	public void setItems(final Collection<T> items)
+	{
+		this.withAllAvailableItems(new ArrayList<>(items), true);
+	}
+	
+	/*
+	 * Label (of the ComboBox)
+	 */
+	
 	public String getLabel()
 	{
 		return this.cbAvailableItems.getLabel();
@@ -261,22 +309,40 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	public ChipComboBox<T> withLabel(final String label)
 	{
-		Objects.requireNonNull(label);
-		this.cbAvailableItems.setLabel(label);
+		this.setLabel(label);
 		return this;
 	}
+	
+	public void setLabel(final String label)
+	{
+		Objects.requireNonNull(label);
+		this.cbAvailableItems.setLabel(label);
+	}
+	
+	/*
+	 * Placeholder (of the ComboBox)
+	 */
 	
 	public String getPlaceholder()
 	{
 		return this.cbAvailableItems.getPlaceholder();
 	}
-
+	
 	public ChipComboBox<T> withPlaceholder(final String placeholder)
+	{
+		this.setPlaceholder(placeholder);
+		return this;
+	}
+	
+	public void setPlaceholder(final String placeholder)
 	{
 		Objects.requireNonNull(placeholder);
 		this.cbAvailableItems.setPlaceholder(placeholder);
-		return this;
 	}
+	
+	/*
+	 * FullComboBoxWidth
+	 */
 	
 	public ChipComboBox<T> withFullComboBoxWidth()
 	{
@@ -284,6 +350,12 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	}
 	
 	public ChipComboBox<T> withFullComboBoxWidth(final boolean useFullWidth)
+	{
+		this.setFullComboBoxWidth(useFullWidth);
+		return this;
+	}
+	
+	public void setFullComboBoxWidth(final boolean useFullWidth)
 	{
 		if(useFullWidth)
 		{
@@ -293,6 +365,56 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		{
 			this.cbAvailableItems.setWidth(null);
 		}
+	}
+	
+	/*
+	 * Item Label generator
+	 */
+	
+	/**
+	 * Sets the item label generator used by the individual {@link ChipComponent}s.
+	 * 
+	 * @return
+	 */
+	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.chipItemLabelGenerator = generator;
+	}
+	
+	/**
+	 * Sets the item label generator used by the individual {@link ChipComponent}s. Equal to setChipItemLabelGenerator,
+	 * but allows in-line usage for easier component creation.
+	 * 
+	 * @return this
+	 */
+	public ChipComboBox<T> withChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.setChipItemLabelGenerator(generator);
+		return this;
+	}
+	
+	/**
+	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
+	 * {@link ChipComponent}s.
+	 * 
+	 * @return
+	 */
+	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.cbAvailableItems.setItemLabelGenerator(generator);
+		this.setChipItemLabelGenerator(generator);
+	}
+	
+	/**
+	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
+	 * {@link ChipComponent}s. Identical with setItemLabelGenerator, but allows in-line usage for easier component
+	 * creation.
+	 * 
+	 * @return this
+	 */
+	public ChipComboBox<T> withItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.setItemLabelGenerator(generator);
 		return this;
 	}
 
@@ -304,7 +426,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.cbAvailableItems.setReadOnly(readOnly);
 		this.selectedComponents.forEach(comp -> comp.setReadonly(readOnly));
 	}
-
+	
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
@@ -316,16 +438,18 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public ComboBox<T> getCbAvailableItems()
 	{
 		return this.cbAvailableItems;
 	}
-
+	
 	/**
 	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/>
 	 * NOTE: If the contents of the {@link FlexLayout} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public FlexLayout getChipsContainer()

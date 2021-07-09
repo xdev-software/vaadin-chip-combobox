@@ -32,6 +32,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.shared.Registration;
@@ -72,6 +73,7 @@ public class ChipComponent<T> extends Composite<HorizontalLayout> implements
 		this.btnDelete.setSizeUndefined();
 		
 		this.getContent().setSpacing(false);
+		this.getContent().setAlignItems(Alignment.CENTER);
 		
 		final Style style = this.getContent().getStyle();
 		style.set("background-color", "var(--lumo-contrast-10pct)");
