@@ -41,6 +41,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.binder.HasItems;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.shared.Registration;
 
@@ -55,7 +56,8 @@ import com.vaadin.flow.shared.Registration;
 public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	HasValue<ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>, Collection<T>>,
 	HasStyle,
-	HasSize
+	HasSize,
+	HasItems<T>
 {
 	
 	/*
@@ -63,12 +65,12 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
 	protected FlexLayout chipsContainer = new FlexLayout();
-
+	
 	/*
 	 * Suppliers / Configuration
 	 */
 	protected Supplier<ChipComponent> chipsSupplier = ChipComponent::new;
-	protected ItemLabelGenerator<T> itemLabelGenerator = Object::toString;
+	protected ItemLabelGenerator<T> chipItemLabelGenerator = Object::toString;
 	
 	/*
 	 * Fields
@@ -87,7 +89,6 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		final Style chipsContainerStyle = this.chipsContainer.getStyle();
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
-		
 		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
@@ -122,7 +123,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	{
 		final ChipComponent chipComponent = this.chipsSupplier.get();
 		
-		chipComponent.withLabelText(this.itemLabelGenerator.apply(newItem));
+		chipComponent.withLabelText(this.chipItemLabelGenerator.apply(newItem));
 		
 		chipComponent.addBtnDeleteClickListener(ev ->
 		{
@@ -146,6 +147,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	/**
 	 * Updates/Rebuilds the UI form the fields
+	 * 
 	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
 	public void updateUI()
@@ -157,7 +159,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	protected void updateSelectedChips()
 	{
 		this.chipsContainer.removeAll();
-		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[] {}));
+		this.chipsContainer.add(this.selectedItems.values().toArray(new ChipComponent[]{}));
 	}
 	
 	protected void updateAvailableItems()
@@ -168,30 +170,72 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// setters + getters  //
+	// setters + getters //
 	///////////////////////
 	
+	/*
+	 * Chips Supplier
+	 */
+	
+	/**
+	 * Returns the current supplier for creating new {@link ChipComponent ChipComponents}
+	 * @return the current supplier for creating new {@link ChipComponent ChipComponents}
+	 */
 	public Supplier<ChipComponent> getChipsSupplier()
 	{
 		return this.chipsSupplier;
 	}
 	
+	/**
+	 * @see ChipComboBox#setChipsSupplier(Supplier)
+	 * 
+	 * @param chipsSupplier
+	 * @return the component itself
+	 */
 	public ChipComboBox<T> withChipsSupplier(final Supplier<ChipComponent> chipsSupplier)
 	{
-		this.chipsSupplier = chipsSupplier;
+		this.setChipsSupplier(chipsSupplier);
 		return this;
 	}
 	
+	/**
+	 * Sets the supplier for creating new {@link ChipComponent ChipComponents}
+	 * @param chipsSupplier supplier for creating new {@link ChipComponent ChipComponents}
+	 */
+	public void setChipsSupplier(final Supplier<ChipComponent> chipsSupplier)
+	{
+		this.chipsSupplier = Objects.requireNonNull(chipsSupplier);
+	}
+	
+	/*
+	 * All available items
+	 */
+	
+	/**
+	 * Get all available items, that can potentially get selected
+	 * @return
+	 */
 	public List<T> getAllAvailableItems()
 	{
 		return new ArrayList<>(this.allAvailableItems);
 	}
 	
+	/**
+	 * @see ChipComboBox#withAllAvailableItems(List, boolean)
+	 * @param allAvailableItems
+	 * @return the component itself
+	 */
 	public ChipComboBox<T> withAllAvailableItems(final List<T> allAvailableItems)
 	{
 		return this.withAllAvailableItems(allAvailableItems, true);
 	}
 	
+	/**
+	 * Set all available items, that can potentially get selected
+	 * @param allAvailableItems all available items, that can potentially get selected
+	 * @param updateUI if the ui should get updated
+	 * @return the component itself
+	 */
 	public ChipComboBox<T> withAllAvailableItems(final List<T> allAvailableItems, final boolean updateUI)
 	{
 		Objects.requireNonNull(allAvailableItems);
@@ -212,6 +256,21 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see ChipComboBox#withAllAvailableItems(List)
+	 */
+	@Override
+	public void setItems(final Collection<T> items)
+	{
+		this.withAllAvailableItems(new ArrayList<>(items), true);
+	}
+	
+	/*
+	 * Label (of the ComboBox)
+	 */
+	
 	public String getLabel()
 	{
 		return this.cbAvailableItems.getLabel();
@@ -219,22 +278,40 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	public ChipComboBox<T> withLabel(final String label)
 	{
-		Objects.requireNonNull(label);
-		this.cbAvailableItems.setLabel(label);
+		this.setLabel(label);
 		return this;
 	}
+	
+	public void setLabel(final String label)
+	{
+		Objects.requireNonNull(label);
+		this.cbAvailableItems.setLabel(label);
+	}
+	
+	/*
+	 * Placeholder (of the ComboBox)
+	 */
 	
 	public String getPlaceholder()
 	{
 		return this.cbAvailableItems.getPlaceholder();
 	}
-
+	
 	public ChipComboBox<T> withPlaceholder(final String placeholder)
+	{
+		this.setPlaceholder(placeholder);
+		return this;
+	}
+	
+	public void setPlaceholder(final String placeholder)
 	{
 		Objects.requireNonNull(placeholder);
 		this.cbAvailableItems.setPlaceholder(placeholder);
-		return this;
 	}
+	
+	/*
+	 * FullComboBoxWidth
+	 */
 	
 	public ChipComboBox<T> withFullComboBoxWidth()
 	{
@@ -242,6 +319,12 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	}
 	
 	public ChipComboBox<T> withFullComboBoxWidth(final boolean useFullWidth)
+	{
+		this.setFullComboBoxWidth(useFullWidth);
+		return this;
+	}
+	
+	public void setFullComboBoxWidth(final boolean useFullWidth)
 	{
 		if(useFullWidth)
 		{
@@ -251,9 +334,63 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		{
 			this.cbAvailableItems.setWidth(null);
 		}
+	}
+	
+	/*
+	 * Item Label generator
+	 */
+	
+	/**
+	 * Sets the item label generator used by the individual {@link ChipComponent}s.
+	 * 
+	 * @return
+	 */
+	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.chipItemLabelGenerator = generator;
+	}
+	
+	/**
+	 * Sets the item label generator used by the individual {@link ChipComponent}s. Equal to setChipItemLabelGenerator,
+	 * but allows in-line usage for easier component creation.
+	 * 
+	 * @return this
+	 */
+	public ChipComboBox<T> withChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.setChipItemLabelGenerator(generator);
+		return this;
+	}
+	
+	/**
+	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
+	 * {@link ChipComponent}s.
+	 * 
+	 * @return
+	 */
+	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.cbAvailableItems.setItemLabelGenerator(generator);
+		this.setChipItemLabelGenerator(generator);
+	}
+	
+	/**
+	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
+	 * {@link ChipComponent}s. Identical with setItemLabelGenerator, but allows in-line usage for easier component
+	 * creation.
+	 * 
+	 * @return this
+	 */
+	public ChipComboBox<T> withItemLabelGenerator(final ItemLabelGenerator<T> generator)
+	{
+		this.setItemLabelGenerator(generator);
 		return this;
 	}
 
+	/*
+	 * Value
+	 */
+	
 	@Override
 	public void setValue(final Collection<T> value)
 	{
@@ -266,7 +403,7 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 		
 		this.updateUI();
 	}
-
+	
 	@Override
 	public Collection<T> getValue()
 	{
@@ -275,62 +412,65 @@ public class ChipComboBox<T> extends Composite<VerticalLayout> implements
 	
 	protected void fireValueChange(final Collection<T> oldValue, final boolean fromClient)
 	{
-		 ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
+		ComponentUtil.fireEvent(this, new ComponentValueChangeEvent<>(this, this, oldValue, fromClient));
 	}
-
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public Registration addValueChangeListener(
 		final ValueChangeListener<? super ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>> listener)
 	{
 		@SuppressWarnings("rawtypes")
-		final
-        ComponentEventListener componentListener = event -> {
-            final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent = (ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>) event;
-            listener.valueChanged(valueChangeEvent);
-        };
-        return ComponentUtil.addListener(this,
-                ComponentValueChangeEvent.class, componentListener);
+		//@formatter:off
+		final ComponentEventListener componentListener = event -> {
+			final ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>> valueChangeEvent = (ComponentValueChangeEvent<ChipComboBox<T>, Collection<T>>) event;
+			listener.valueChanged(valueChangeEvent);
+		};
+		return ComponentUtil.addListener(this, ComponentValueChangeEvent.class, componentListener);
+		//@formatter:on
 	}
-
+	
+	
 	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
 		this.cbAvailableItems.setReadOnly(readOnly);
 		this.selectedItems.values().forEach(comp -> comp.setReadonly(readOnly));
 	}
-
+	
 	@Override
 	public boolean isReadOnly()
 	{
 		return this.cbAvailableItems.isReadOnly();
 	}
-
+	
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
 	}
-
+	
 	@Override
 	public boolean isRequiredIndicatorVisible()
 	{
 		return this.cbAvailableItems.isRequiredIndicatorVisible();
 	}
-
+	
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public ComboBox<T> getCbAvailableItems()
 	{
 		return this.cbAvailableItems;
 	}
-
+	
 	/**
 	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/>
 	 * NOTE: If the contents of the {@link FlexLayout} are modified from the outside this component may break
+	 * 
 	 * @return
 	 */
 	public FlexLayout getChipsContainer()
