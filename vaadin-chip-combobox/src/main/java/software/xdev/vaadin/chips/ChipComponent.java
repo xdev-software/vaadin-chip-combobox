@@ -89,8 +89,6 @@ public class ChipComponent<T> extends Composite<HorizontalLayout> implements
 	{
 		this.updateTextFromItemLabelGenerator();
 	}
-	
-	
 
 	public T getItem()
 	{
@@ -102,6 +100,9 @@ public class ChipComponent<T> extends Composite<HorizontalLayout> implements
 		this.itemLabelGenerator = itemLabelGenerator;
 	}
 	
+	/**
+	 * Updates the text of the {@link Label} from the integrated {@link ItemLabelGenerator}
+	 */
 	public void updateTextFromItemLabelGenerator()
 	{
 		this.label.setText(this.itemLabelGenerator.apply(this.item));

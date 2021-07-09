@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.AbstractCompositeField;
@@ -52,8 +53,7 @@ import com.vaadin.flow.dom.Style;
 public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
 	HasItems<T>,
 	HasStyle,
-	HasSize,
-	HasItems<T>
+	HasSize
 {
 	
 	/*
@@ -81,7 +81,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.initUI();
 		this.initListeners();
 	}
-
+	
 	protected void initUI()
 	{
 		final Style chipsContainerStyle = this.chipsContainer.getStyle();
@@ -118,8 +118,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		 */
 		
 		// Remove components
-		this.selectedComponents
-			.removeIf(comp -> !newPresentationValue.contains(comp.getItem()));
+		this.selectedComponents.removeIf(comp -> !newPresentationValue.contains(comp.getItem()));
 		
 		// Find new values and build components
 		// @formatter:off
@@ -133,7 +132,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 			.map(item ->
 			{
 				final ChipComponent<T> chipComponent = this.chipsSupplier.apply(item);
-				chipComponent.setItemLabelGenerator(this.itemLabelGenerator);
+				chipComponent.setItemLabelGenerator(this.chipItemLabelGenerator);
 				chipComponent.addBtnDeleteClickListener(ev ->
 				{
 					if(this.isReadOnly())
@@ -151,7 +150,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.updateUI();
 	}
 	
-	
 	protected void addItem(final T item, final boolean isFromClient)
 	{
 		final List<T> values = new ArrayList<>(this.getValue());
@@ -168,13 +166,15 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Updates the underlying values (if the newValues doesn't equals the oldValue)
+	 * 
 	 * @implNote
-	 * This is a "workaround" for <a href="https://github.com/vaadin/flow/issues/11392">vaadin/flow#11392</a><br/>
-	 * The following behaviors may be unexpected:
-	 * <ul>
-	 * 	<li>The {@link ValueChangeEvent} is fired before the UI is updated</li>
-	 * 	<li>No internal data management like in {@link AbstractFieldSupport}</li>
-	 * </ul>
+	 *           This is a "workaround" for
+	 *           <a href="https://github.com/vaadin/flow/issues/11392">vaadin/flow#11392</a><br/>
+	 *           The following behaviors may be unexpected:
+	 *           <ul>
+	 *           <li>The {@link ValueChangeEvent} is fired before the UI is updated</li>
+	 *           <li>No internal data management like in {@link AbstractFieldSupport}</li>
+	 *           </ul>
 	 * @param newValues
 	 * @param isFromClient
 	 */
@@ -189,9 +189,8 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		}
 	}
 	
-	
 	/**
-	 * Updates/Rebuilds the UI form the fields
+	 * Updates/Rebuilds the UI from the fields
 	 * 
 	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
@@ -204,7 +203,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	protected void updateSelectedChips()
 	{
 		this.chipsContainer.removeAll();
-		this.chipsContainer.add(this.selectedComponents.toArray(new ChipComponent[] {}));
+		this.chipsContainer.add(this.selectedComponents.toArray(new ChipComponent[]{}));
 	}
 	
 	protected void updateAvailableItems()
@@ -214,6 +213,13 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.cbAvailableItems.setItems(availableItems);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @apiNote
+	 *          Currently selected/set values that no longer exist in the new items collection
+	 *          will be removed.
+	 */
 	@Override
 	public void setItems(final Collection<T> items)
 	{
@@ -226,6 +232,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		values.removeIf(v -> !this.allAvailableItems.contains(v));
 		this.updateValues(values, false);
 		
+		// Force UI update here to ensure everything (selected + available) is shown correctly
 		this.updateUI();
 	}
 	
@@ -239,6 +246,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Returns the current supplier for creating new {@link ChipComponent ChipComponents}
+	 * 
 	 * @return the current supplier for creating new {@link ChipComponent ChipComponents}
 	 */
 	public Function<T, ChipComponent<T>> getChipsSupplier()
@@ -260,7 +268,9 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Sets the supplier for creating new {@link ChipComponent ChipComponents}
-	 * @param chipsSupplier supplier for creating new {@link ChipComponent ChipComponents}
+	 * 
+	 * @param chipsSupplier
+	 *            supplier for creating new {@link ChipComponent ChipComponents}
 	 */
 	public void setChipsSupplier(final Function<T, ChipComponent<T>> chipsSupplier)
 	{
@@ -273,29 +283,19 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Get all available items, that can potentially get selected
+	 * 
 	 * @return
 	 */
 	public List<T> getAllAvailableItems()
 	{
 		return new ArrayList<>(this.allAvailableItems);
 	}
-		
+	
 	public ChipComboBox<T> withAllAvailableItems(final Collection<T> allAvailableItems)
 	{
 		this.setItems(allAvailableItems);
 		
 		return this;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see ChipComboBox#withAllAvailableItems(List)
-	 */
-	@Override
-	public void setItems(final Collection<T> items)
-	{
-		this.withAllAvailableItems(new ArrayList<>(items), true);
 	}
 	
 	/*
@@ -379,6 +379,11 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
 	{
 		this.chipItemLabelGenerator = generator;
+		this.selectedComponents.forEach(chipComp ->
+		{
+			chipComp.setItemLabelGenerator(this.chipItemLabelGenerator);
+			chipComp.updateTextFromItemLabelGenerator();
+		});
 	}
 	
 	/**
@@ -417,7 +422,11 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.setItemLabelGenerator(generator);
 		return this;
 	}
-
+	
+	/*
+	 * Other
+	 */
+	
 	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
@@ -434,7 +443,11 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
 	}
-
+	
+	/*
+	 * UI-Components
+	 */
+	
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
