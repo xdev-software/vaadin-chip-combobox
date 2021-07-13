@@ -444,6 +444,20 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
 	}
 
+	
+	@Override
+	public void setValue(final Collection<T> value)
+	{
+		this.selectedComponents.clear();
+		final ArrayList<T> newValue = new ArrayList<>();
+		if(value != null)
+		{
+			this.updateValues(newValue, true);
+		}
+		this.updateValues(newValue, true);
+		this.updateUI();
+	}
+	
 	/*
 	 * UI-Components
 	 */
