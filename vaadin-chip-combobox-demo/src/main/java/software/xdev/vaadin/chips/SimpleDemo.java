@@ -69,14 +69,14 @@ public class SimpleDemo extends HorizontalLayout
 		this.btnSetRandomAvailableInts.addClickListener(ev -> this.setAvailableIntsRandom());
 		
 		this.btnShowSelectedInt.addClickListener(ev ->
-			Notification.show("Selected: " + this.intBox.getValue().stream().map(i -> i.toString()).collect(Collectors.joining(", ")))
+			Notification.show("Selected: " + this.intBox.getValue().stream().map(Object::toString).collect(Collectors.joining(", ")))
 		);
 		
 		this.intBox.addValueChangeListener(ev ->
 			// @formatter:off
 			this.taValueChangeInt.setValue(
-					"Value: [" + ev.getValue().stream().map(i -> i.toString()).collect(Collectors.joining(", ")) + "] \r\n" +
-					"OldValue: [" + ev.getOldValue().stream().map(i -> i.toString()).collect(Collectors.joining(", ")) + "] \r\n" +
+					"Value: [" + ev.getValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
+					"OldValue: [" + ev.getOldValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
 					"IsFromClient: " + ev.isFromClient()
 			)
 			// @formatter:on
