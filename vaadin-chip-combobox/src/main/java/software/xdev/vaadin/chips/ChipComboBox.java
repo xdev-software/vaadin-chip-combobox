@@ -22,7 +22,6 @@ package software.xdev.vaadin.chips;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -76,8 +75,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 
 	public ChipComboBox()
 	{
-		super(Collections.emptyList());
-
+		super(new ArrayList<>());
 		this.initUI();
 		this.initListeners();
 	}
@@ -448,14 +446,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	@Override
 	public void setValue(final Collection<T> value)
 	{
-		this.selectedComponents.clear();
-		final ArrayList<T> newValue = new ArrayList<>();
-		if(value != null)
-		{
-			this.updateValues(newValue, true);
-		}
-		this.updateValues(newValue, true);
-		this.updateUI();
+		super.setValue(Objects.requireNonNull(value));
 	}
 	
 	/*
