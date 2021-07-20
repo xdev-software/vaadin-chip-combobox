@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.ItemLabelGenerator;
@@ -102,9 +103,10 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.btnReset.setSizeUndefined();
 		
 		this.comboboxContainer.add(this.cbAvailableItems, this.btnReset);
+		this.comboboxContainer.setWidthFull();
 		
 		this.btnReset.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
-		this.btnReset.getStyle().set("font-size", "var(--lumo-font-size-m)");
+		this.btnReset.getStyle().set("font-size", "1.25em");
 		
 		this.getContent().add(this.comboboxContainer, this.chipsContainer);
 	}
@@ -177,6 +179,11 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		// @formatter:on
 		
 		this.updateUI();
+	}
+	
+	protected void setResetIcon(final Component icon)
+	{
+		this.btnReset.setIcon(icon);
 	}
 	
 	protected void addItem(final T item, final boolean isFromClient)
