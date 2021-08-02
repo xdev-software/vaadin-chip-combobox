@@ -40,6 +40,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.HasItems;
 import com.vaadin.flow.dom.Style;
+import com.vaadin.flow.function.SerializableFunction;
 
 
 /**
@@ -64,7 +65,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/*
 	 * Suppliers / Configuration
 	 */
-	protected Function<T, ChipComponent<T>> chipsSupplier = ChipComponent::new;
+	protected SerializableFunction<T, ChipComponent<T>> chipsSupplier = ChipComponent::new;
 	protected ItemLabelGenerator<T> chipItemLabelGenerator = Object::toString;
 	
 	/*
@@ -259,7 +260,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * @param chipsSupplier
 	 * @return the component itself
 	 */
-	public ChipComboBox<T> withChipsSupplier(final Function<T, ChipComponent<T>> chipsSupplier)
+	public ChipComboBox<T> withChipsSupplier(final SerializableFunction<T, ChipComponent<T>> chipsSupplier)
 	{
 		this.setChipsSupplier(chipsSupplier);
 		return this;
@@ -271,7 +272,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * @param chipsSupplier
 	 *            supplier for creating new {@link ChipComponent ChipComponents}
 	 */
-	public void setChipsSupplier(final Function<T, ChipComponent<T>> chipsSupplier)
+	public void setChipsSupplier(final SerializableFunction<T, ChipComponent<T>> chipsSupplier)
 	{
 		this.chipsSupplier = Objects.requireNonNull(chipsSupplier);
 	}
