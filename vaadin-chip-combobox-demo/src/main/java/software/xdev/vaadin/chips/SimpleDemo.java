@@ -29,8 +29,7 @@ public class SimpleDemo extends HorizontalLayout
 	
 	private final ChipComboBox<String> stringBox = new ChipComboBox<String>()
 		.withLabel("Programming languages")
-		.withPlaceholder("Select programming language")
-		.withFullComboBoxWidth();
+		.withPlaceholder("Select programming language");
 	
 	private final Button btnRestoreStringDefaults = new Button("Restore default selected values");
 	
@@ -85,6 +84,8 @@ public class SimpleDemo extends HorizontalLayout
 	
 	private void initUI()
 	{
+		this.stringBox.setWidthFull();
+		
 		final SplitLayout slLimit = new SplitLayout(new VerticalLayout(this.stringBox), new Div());
 		slLimit.setOrientation(Orientation.HORIZONTAL);
 		slLimit.setSplitterPosition(40);
