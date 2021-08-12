@@ -95,7 +95,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.getContent().add(this.cbAvailableItems, this.chipsContainer);
 		
 		// Since version 2.2 the default
-		// Long words (> 18 chars) are not displayed correctly with the hardcoded with of 12em
+		// Long words (> 18 chars) are not displayed correctly with the hardcoded width of 12em
 		this.setFullComboBoxWidth(true);
 	}
 	
