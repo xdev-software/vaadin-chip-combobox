@@ -32,6 +32,7 @@ import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
@@ -52,6 +53,7 @@ import com.vaadin.flow.function.SerializableFunction;
  */
 public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
 	HasItems<T>,
+	HasValidation,
 	HasStyle,
 	HasSize
 {
@@ -461,6 +463,42 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		super.setRequiredIndicatorVisible(requiredIndicatorVisible);
 		
 		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setErrorMessage(final String errorMessage)
+	{
+		this.cbAvailableItems.setErrorMessage(errorMessage);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getErrorMessage()
+	{
+		return this.cbAvailableItems.getErrorMessage();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setInvalid(final boolean invalid)
+	{
+		this.cbAvailableItems.setInvalid(invalid);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isInvalid()
+	{
+		return this.cbAvailableItems.isInvalid();
 	}
 	
 	/*
