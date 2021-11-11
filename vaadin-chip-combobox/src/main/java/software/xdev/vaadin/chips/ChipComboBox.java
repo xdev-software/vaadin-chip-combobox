@@ -350,17 +350,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * FullComboBoxWidth
 	 */
 	
-	/**
-	 * 
-	 * @return
-	 * @deprecated Since version 2.2 the default
-	 */
-	@Deprecated
-	public ChipComboBox<T> withFullComboBoxWidth()
-	{
-		return this.withFullComboBoxWidth(true);
-	}
-	
 	public ChipComboBox<T> withFullComboBoxWidth(final boolean useFullWidth)
 	{
 		this.setFullComboBoxWidth(useFullWidth);
