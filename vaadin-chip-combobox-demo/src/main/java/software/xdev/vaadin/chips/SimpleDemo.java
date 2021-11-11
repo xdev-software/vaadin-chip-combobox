@@ -32,6 +32,8 @@ public class SimpleDemo extends HorizontalLayout
 		.withPlaceholder("Select programming language");
 	
 	private final Button btnRestoreStringDefaults = new Button("Restore default selected values");
+	private final Button btnClear = new Button("Clear");
+	private final Button btnSetValueNull = new Button("Clear (using setValue with null)");
 	private final Button btnSetInvalid = new Button("Set invalid");
 	private final Button btnClearInvalid = new Button("Clear invalid");
 	
@@ -95,6 +97,9 @@ public class SimpleDemo extends HorizontalLayout
 		
 		this.btnRestoreStringDefaults.addClickListener(ev -> this.restoreStringDefaults());
 		
+		this.btnClear.addClickListener(ev -> this.stringBox.clear());
+		this.btnSetValueNull.addClickListener(ev -> this.stringBox.setValue(null));
+		
 		this.btnSetInvalid.addClickListener(ev -> {
 			this.stringBox.setErrorMessage("An error message");
 			this.stringBox.setInvalid(true);
@@ -112,6 +117,7 @@ public class SimpleDemo extends HorizontalLayout
 		this.vlLeft.add(
 			slLimit,
 			this.btnRestoreStringDefaults,
+			new HorizontalLayout(this.btnClear, this.btnSetValueNull),
 			new HorizontalLayout(this.btnSetInvalid, this.btnClearInvalid),
 			this.taValueChangeString);
 		
