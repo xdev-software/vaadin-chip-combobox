@@ -321,7 +321,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	public void setLabel(final String label)
 	{
-		Objects.requireNonNull(label);
 		this.cbAvailableItems.setLabel(label);
 	}
 	
@@ -342,24 +341,12 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	public void setPlaceholder(final String placeholder)
 	{
-		Objects.requireNonNull(placeholder);
 		this.cbAvailableItems.setPlaceholder(placeholder);
 	}
 	
 	/*
 	 * FullComboBoxWidth
 	 */
-	
-	/**
-	 * 
-	 * @return
-	 * @deprecated Since version 2.2 the default
-	 */
-	@Deprecated
-	public ChipComboBox<T> withFullComboBoxWidth()
-	{
-		return this.withFullComboBoxWidth(true);
-	}
 	
 	public ChipComboBox<T> withFullComboBoxWidth(final boolean useFullWidth)
 	{
@@ -390,7 +377,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 */
 	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
 	{
-		this.chipItemLabelGenerator = generator;
+		this.chipItemLabelGenerator = Objects.requireNonNull(generator, "The item label generator can not be null");
 		this.selectedComponents.forEach(chipComp ->
 		{
 			chipComp.setItemLabelGenerator(this.chipItemLabelGenerator);
@@ -442,10 +429,15 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	@Override
 	public void setValue(final Collection<T> value)
 	{
-		super.setValue(
-			Objects.requireNonNull(
-				value,
-				"Cannot set a null value. Use the clear-method to reset the component's value."));
+		// Cannot set a null value.
+		// Using the clear-method to reset the component's value
+		if(value == null)
+		{
+			this.clear();
+			return;
+		}
+		
+		super.setValue(value);
 	}
 	
 	@Override
@@ -473,7 +465,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	{
 		this.cbAvailableItems.setErrorMessage(errorMessage);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -482,7 +474,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	{
 		return this.cbAvailableItems.getErrorMessage();
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -491,7 +483,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	{
 		this.cbAvailableItems.setInvalid(invalid);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
