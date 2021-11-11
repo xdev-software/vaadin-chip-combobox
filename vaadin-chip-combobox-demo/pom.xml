@@ -6,7 +6,7 @@
 	<groupId>com.xdev-software</groupId>
 	<artifactId>vaadin-chip-combobox-demo</artifactId>
 	
-	<version>2.2.2-SNAPSHOT</version>
+	<version>2.2.2</version>
 	<packaging>war</packaging>
 
 	<name>Chip-ComboBox Demo</name>
