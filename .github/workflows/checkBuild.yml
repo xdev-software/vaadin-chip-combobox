@@ -46,7 +46,7 @@ jobs:
         fi
 
     - name: Upload demo files
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: demo-files
         path: vaadin-chip-combobox-demo/target/vaadin-chip-combobox-demo.war

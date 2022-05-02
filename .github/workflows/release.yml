@@ -152,7 +152,7 @@ jobs:
       working-directory: vaadin-chip-combobox
       
     - name: Upload asset
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: vaadin-directory-files
         path: vaadin-chip-combobox/target/vaadin-chip-combobox-*.zip
@@ -198,7 +198,7 @@ jobs:
       working-directory: vaadin-chip-combobox
 
     - name: Upload licenses - Upload Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: dependencies-licenses
         path: vaadin-chip-combobox/target/site
