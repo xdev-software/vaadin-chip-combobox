@@ -7,7 +7,7 @@
 	<artifactId>vaadin-chip-combobox</artifactId>
 	
 	<packaging>jar</packaging>
-	<version>2.2.4-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 
 
 	<name>Chip-ComboBox for Vaadin</name>
@@ -59,7 +59,7 @@
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 
 		<!-- Dependency-Versions -->
-		<vaadin.version>14.8.14</vaadin.version>
+		<vaadin.version>23.1.4</vaadin.version>
 	</properties>
 
 
