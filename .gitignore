@@ -1,9 +1,5 @@
 **/target/
 
-# IDEA
-.idea/
-*.iml
-
 # MacOS
 .DS_Store
 
@@ -29,3 +25,23 @@ rebel.xml
 package.json
 package-lock.json
 webpack.config.js
+
+# == IntelliJ ==
+*.iml
+*.ipr
+
+# Some files are user/installation independent and are used for configuring the IDE
+# See also https://stackoverflow.com/a/35279076
+
+.idea/*
+!.idea/saveactions_settings.xml
+!.idea/checkstyle-idea.xml
+
+!.idea/inspectionProfiles/
+.idea/inspectionProfiles/*
+!.idea/inspectionProfiles/Project_Default.xml
+
+!.idea/codeStyles/
+.idea/codeStyles/*
+!.idea/codeStyles/codeStyleConfig.xml
+!.idea/codeStyles/Project.xml
