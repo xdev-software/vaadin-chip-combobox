@@ -9,13 +9,11 @@
 	<version>3.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>Chip-ComboBox Demo</name>
-	
 	<inceptionYear>2021</inceptionYear>
 
 	<organization>
 		<name>XDEV Software</name>
-		<url>https://xdev-software.com</url>
+		<url>https://xdev.software/en</url>
 	</organization>
 	
 	<licenses>
