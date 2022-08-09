@@ -6,21 +6,21 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.xdev-software</groupId>
-	<artifactId>vaadin-addon-template</artifactId>
+	<artifactId>vaadin-chip-combobox</artifactId>
 
 	<packaging>jar</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>3.0.1-SNAPSHOT</version>
 
-	<name>vaadin-addon-template</name>
-	<description>vaadin-addon-template</description>
-	<url>https://github.com/xdev-software/vaadin-addon-template</url>
+	<name>Chip-ComboBox for Vaadin</name>
+	<description>Chip-ComboBox for Vaadin Flow</description>
+	<url>https://github.com/xdev-software/vaadin-chip-combobox</url>
 
 	<scm>
-		<url>https://github.com/xdev-software/vaadin-addon-template</url>
-		<connection>https://github.com/xdev-software/vaadin-addon-template.git</connection>
+		<url>https://github.com/xdev-software/vaadin-chip-combobox</url>
+		<connection>https://github.com/xdev-software/vaadin-chip-combobox.git</connection>
 	</scm>
 
-	<inceptionYear>2022</inceptionYear>
+	<inceptionYear>2021</inceptionYear>
 
 	<organization>
 		<name>XDEV Software</name>

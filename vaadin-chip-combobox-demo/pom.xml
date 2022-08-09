@@ -6,11 +6,11 @@
 
 
 	<groupId>com.xdev-software</groupId>
-	<artifactId>vaadin-addon-template-demo</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>vaadin-chip-combobox-demo</artifactId>
+	<version>3.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<inceptionYear>2022</inceptionYear>
+	<inceptionYear>2021</inceptionYear>
 
 	<organization>
 		<name>XDEV Software</name>
@@ -57,7 +57,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.xdev-software</groupId>
-			<artifactId>vaadin-addon-template</artifactId>
+			<artifactId>vaadin-chip-combobox</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
