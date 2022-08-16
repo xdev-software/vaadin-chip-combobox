@@ -4,7 +4,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-
 	<groupId>com.xdev-software</groupId>
 	<artifactId>vaadin-chip-combobox-demo</artifactId>
 	<version>3.0.1-SNAPSHOT</version>
@@ -34,7 +33,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency-Versions -->
-		<vaadin.version>23.1.4</vaadin.version>
+		<vaadin.version>23.1.6</vaadin.version>
 	</properties>
 
 
