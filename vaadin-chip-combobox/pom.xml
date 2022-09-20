@@ -51,7 +51,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency-Versions -->
-		<vaadin.version>23.1.6</vaadin.version>
+		<vaadin.version>23.2.1</vaadin.version>
 	</properties>
 
 	<dependencyManagement>
@@ -190,7 +190,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.2</version>
+				<version>3.3.0</version>
 				<configuration>
 					<archive>
 						<index>true</index>
@@ -283,7 +283,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jar-plugin</artifactId>
-						<version>3.2.2</version>
+						<version>3.3.0</version>
 						<configuration>
 							<!-- VAADIN files that shouldn't be included in add-ons -->
 							<excludes>
