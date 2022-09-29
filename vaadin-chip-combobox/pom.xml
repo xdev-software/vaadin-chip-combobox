@@ -1,14 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>com.xdev-software</groupId>
 	<artifactId>vaadin-chip-combobox</artifactId>
-	
-	<packaging>jar</packaging>
 	<version>3.0.1-SNAPSHOT</version>
-
+	<packaging>jar</packaging>
 
 	<name>Chip-ComboBox for Vaadin</name>
 	<description>Chip-ComboBox for Vaadin Flow</description>
@@ -19,13 +18,12 @@
 		<connection>https://github.com/xdev-software/vaadin-chip-combobox.git</connection>
 	</scm>
 
+	<inceptionYear>2021</inceptionYear>
 
 	<organization>
 		<name>XDEV Software</name>
 		<url>https://xdev.software/en</url>
 	</organization>
-	
-	<inceptionYear>2021</inceptionYear>
 
 	<developers>
 		<developer>
@@ -35,7 +33,6 @@
 		</developer>
 	</developers>
 
-
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -43,7 +40,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
 
 	<properties>
 		<license.licenseName>apache_v2</license.licenseName>
@@ -53,12 +49,22 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<failOnMissingWebXml>false</failOnMissingWebXml>
 
 		<!-- Dependency-Versions -->
-		<vaadin.version>23.1.4</vaadin.version>
+		<vaadin.version>23.2.2</vaadin.version>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.vaadin</groupId>
+				<artifactId>vaadin-bom</artifactId>
+				<type>pom</type>
+				<scope>import</scope>
+				<version>${vaadin.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<repositories>
 		<!-- The order of definitions matters. Explicitly defining central here 
@@ -72,6 +78,18 @@
 		</repository>
 	</repositories>
 
+	<pluginRepositories>
+		<!-- The order of definitions matters. Explicitly defining central here 
+			to make sure it has the highest priority. -->
+		<pluginRepository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -83,23 +101,12 @@
 		</repository>
 	</distributionManagement>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin-bom</artifactId>
-				<version>${vaadin.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-core</artifactId>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -146,12 +153,15 @@
 				<version>3.10.1</version>
 				<configuration>
 					<release>${maven.compiler.release}</release>
+					<compilerArgs>
+						<arg>-proc:none</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.4.0</version>
+				<version>3.4.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -183,7 +193,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.2</version>
+				<version>3.3.0</version>
 				<configuration>
 					<archive>
 						<index>true</index>
@@ -206,7 +216,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	
 	<profiles>
 		<profile>
 			<id>ossrh</id>
@@ -234,7 +243,7 @@
 							</execution>
 						</executions>
 					</plugin>
-
+					
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -277,7 +286,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jar-plugin</artifactId>
-						<version>3.2.2</version>
+						<version>3.3.0</version>
 						<configuration>
 							<!-- VAADIN files that shouldn't be included in add-ons -->
 							<excludes>
@@ -291,5 +300,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>

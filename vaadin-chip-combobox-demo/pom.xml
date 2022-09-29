@@ -1,11 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>com.xdev-software</groupId>
 	<artifactId>vaadin-chip-combobox-demo</artifactId>
-	
 	<version>3.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
@@ -15,7 +15,7 @@
 		<name>XDEV Software</name>
 		<url>https://xdev.software/en</url>
 	</organization>
-	
+
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -24,8 +24,7 @@
 	</licenses>
 
 	<properties>
-	
-	<license.licenseName>apache_v2</license.licenseName>
+		<license.licenseName>apache_v2</license.licenseName>
 
 		<javaVersion>11</javaVersion>
 		<maven.compiler.release>${javaVersion}</maven.compiler.release>
@@ -34,10 +33,11 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency-Versions -->
-		<vaadin.version>23.1.4</vaadin.version>
+		<vaadin.version>23.2.2</vaadin.version>
 	</properties>
 
-		<dependencyManagement>
+
+	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.vaadin</groupId>
@@ -73,7 +73,7 @@
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>10.0.11</version>
+				<version>10.0.12</version>
 				<configuration>
 					<scan>1</scan>
 				</configuration>
@@ -96,6 +96,9 @@
 				<version>3.10.1</version>
 				<configuration>
 					<release>${maven.compiler.release}</release>
+					<compilerArgs>
+						<arg>-proc:none</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -141,4 +144,5 @@
 			</build>
 		</profile>
 	</profiles>
+
 </project>

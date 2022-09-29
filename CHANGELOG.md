@@ -1,3 +1,8 @@
+## 3.0.1
+
+* Updated dependencies
+  * Vaadin 23.2
+
 ## 3.0.0
 
 ⚠️<i>This release contains breaking changes</i>
