@@ -1,24 +1,19 @@
-package software.xdev.vaadin.chips;
-
-/*-
- * #%L
- * ChipComboBox for Vaadin
- * %%
- * Copyright (C) 2021 XDEV Software
- * %%
+/*
+ * Copyright © 2021 XDEV Software (https://xdev.software/en)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * #L%
  */
+package software.xdev.vaadin.chips;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +42,7 @@ import com.vaadin.flow.function.SerializableFunction;
 /**
  * This component has a combobox with available items and displays the selected items as "chips" underneath it.<br/>
  * It behaves somewhat similar to a {@link Select}.
- * 
+ *
  * @author DL
  * @author AB
  */
@@ -172,7 +167,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Updates the underlying values (if the newValues doesn't equals the oldValue)
-	 * 
+	 *
 	 * @implNote
 	 *           This is a "workaround" for
 	 *           <a href="https://github.com/vaadin/flow/issues/11392">vaadin/flow#11392</a><br/>
@@ -197,7 +192,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Updates/Rebuilds the UI from the fields
-	 * 
+	 *
 	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
 	protected void updateUI()
@@ -221,7 +216,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @apiNote
 	 *          Currently selected/set values that no longer exist in the new items collection
 	 *          will be removed.
@@ -252,7 +247,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Returns the current supplier for creating new {@link ChipComponent ChipComponents}
-	 * 
+	 *
 	 * @return the current supplier for creating new {@link ChipComponent ChipComponents}
 	 */
 	public Function<T, ChipComponent<T>> getChipsSupplier()
@@ -262,7 +257,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * @see ChipComboBox#setChipsSupplier(Supplier)
-	 * 
+	 *
 	 * @param chipsSupplier
 	 * @return the component itself
 	 */
@@ -274,7 +269,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Sets the supplier for creating new {@link ChipComponent ChipComponents}
-	 * 
+	 *
 	 * @param chipsSupplier
 	 *            supplier for creating new {@link ChipComponent ChipComponents}
 	 */
@@ -289,7 +284,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Get all available items, that can potentially get selected
-	 * 
+	 *
 	 * @return
 	 */
 	public List<T> getAllAvailableItems()
@@ -372,7 +367,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Sets the item label generator used by the individual {@link ChipComponent}s.
-	 * 
+	 *
 	 * @return
 	 */
 	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
@@ -388,7 +383,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Sets the item label generator used by the individual {@link ChipComponent}s. Equal to setChipItemLabelGenerator,
 	 * but allows in-line usage for easier component creation.
-	 * 
+	 *
 	 * @return this
 	 */
 	public ChipComboBox<T> withChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
@@ -400,7 +395,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
 	 * {@link ChipComponent}s.
-	 * 
+	 *
 	 * @return
 	 */
 	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
@@ -413,7 +408,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
 	 * {@link ChipComponent}s. Identical with setItemLabelGenerator, but allows in-line usage for easier component
 	 * creation.
-	 * 
+	 *
 	 * @return this
 	 */
 	public ChipComboBox<T> withItemLabelGenerator(final ItemLabelGenerator<T> generator)
@@ -500,7 +495,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
-	 * 
+	 *
 	 * @return
 	 */
 	public ComboBox<T> getCbAvailableItems()
@@ -511,7 +506,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/>
 	 * NOTE: If the contents of the {@link FlexLayout} are modified from the outside this component may break
-	 * 
+	 *
 	 * @return
 	 */
 	public FlexLayout getChipsContainer()
