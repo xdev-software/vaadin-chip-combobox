@@ -25,12 +25,18 @@ import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.ItemLabelGenerator;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -40,10 +46,11 @@ import com.vaadin.flow.function.SerializableFunction;
 
 
 /**
- * This component has a combobox with available items and displays the selected items as "chips" underneath it.<br/>
- * It behaves somewhat similar to a {@link Select}.
+ * This component has a combobox with available items and displays the selected items as "chips" underneath it.<br/> It
+ * behaves somewhat similar to a {@link Select}.
  *
  * @author DL
+ * @author JohannesRabauer
  * @author AB
  */
 public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
@@ -58,6 +65,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
 	protected FlexLayout chipsContainer = new FlexLayout();
+	protected Button btnClearAll = new Button(VaadinIcon.TRASH.create());
 	
 	/*
 	 * Suppliers / Configuration
@@ -85,11 +93,15 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
 		
+		this.btnClearAll.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
+		final FlexLayout comboBoxAndClearButton = new FlexLayout(this.cbAvailableItems, this.btnClearAll);
+		comboBoxAndClearButton.setAlignItems(FlexComponent.Alignment.BASELINE);
+		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
 		this.setSizeUndefined();
 		
-		this.getContent().add(this.cbAvailableItems, this.chipsContainer);
+		this.getContent().add(comboBoxAndClearButton, this.chipsContainer);
 		
 		// Since version 2.2 the default
 		// Long words (> 18 chars) are not displayed correctly with the hardcoded width of 12em
@@ -99,6 +111,17 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	protected void initListeners()
 	{
 		this.cbAvailableItems.addValueChangeListener(this::onCbAvailableItemsValueChanged);
+		this.btnClearAll.addClickListener(this::onClickClearAll);
+	}
+	
+	protected void onClickClearAll(final ClickEvent<Button> buttonClickEvent)
+	{
+		if(this.isReadOnly())
+		{
+			return;
+		}
+		final List<T> values = new ArrayList<>();
+		this.updateValues(values, buttonClickEvent.isFromClient());
 	}
 	
 	protected void onCbAvailableItemsValueChanged(final ComponentValueChangeEvent<ComboBox<T>, T> event)
@@ -337,6 +360,82 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	public void setPlaceholder(final String placeholder)
 	{
 		this.cbAvailableItems.setPlaceholder(placeholder);
+	}
+	
+	/*
+	 * En-/Disable ClearAll-Button
+	 */
+	
+	/**
+	 * @return "Clear All Button" visibility. With this button it is possible to clear all selected items with one
+	 * click. The default value is {@code true}.
+	 */
+	public boolean isClearAllButtonVisible()
+	{
+		return this.btnClearAll.isVisible();
+	}
+	
+	/**
+	 * Sets the "Clear All Button" to visible or invisible. With this button it is possible to clear all selected items
+	 * with one click. The default value is {@code true}.
+	 *
+	 * @param clearAllButtonVisible defines the visibility of the "Clear All Button".
+	 * @return self
+	 */
+	public ChipComboBox<T> withIsClearAllButtonVisible(final boolean clearAllButtonVisible)
+	{
+		this.setClearAllButtonVisible(clearAllButtonVisible);
+		return this;
+	}
+	
+	/**
+	 * Sets the "Clear All Button" to visible or invisible. With this button it is possible to clear all selected items
+	 * with one click. The default value is {@code true}.
+	 *
+	 * @param clearAllButtonVisible defines the visibility of the "Clear All Button".
+	 */
+	public void setClearAllButtonVisible(final boolean clearAllButtonVisible)
+	{
+		this.btnClearAll.setVisible(clearAllButtonVisible);
+	}
+	
+	/*
+	 * Icon of ClearAll-Button
+	 */
+	
+	/**
+	 * @return "Clear All Button" icon. With this button it is possible to clear all selected items with one click. The
+	 * default value is {@link VaadinIcon#TRASH}.
+	 */
+	public Component getClearAllIcon()
+	{
+		return this.btnClearAll.getIcon();
+	}
+	
+	/**
+	 * Sets the "Clear All Button" icon. With this button it is possible to clear all selected items with one click.
+	 * The
+	 * default value is {@link VaadinIcon#TRASH}.
+	 *
+	 * @param clearAllIcon the "Clear All Button" icon.
+	 * @return self
+	 */
+	public ChipComboBox<T> withClearAllIcon(final Component clearAllIcon)
+	{
+		this.setClearAllIcon(clearAllIcon);
+		return this;
+	}
+	
+	/**
+	 * Sets the "Clear All Button" icon. With this button it is possible to clear all selected items with one click.
+	 * The
+	 * default value is {@link VaadinIcon#TRASH}.
+	 *
+	 * @param clearAllIcon the "Clear All Button" icon.
+	 */
+	public void setClearAllIcon(final Component clearAllIcon)
+	{
+		this.btnClearAll.setIcon(clearAllIcon);
 	}
 	
 	/*
