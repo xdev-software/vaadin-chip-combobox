@@ -41,6 +41,7 @@ public class SimpleDemo extends HorizontalLayout
 		new TextArea("ValueChangeEvent", "Change something in the chip combobox to see the result");
 	
 	private final ChipComboBox<Integer> intBox = new ChipComboBox<Integer>()
+		.withIsClearAllButtonVisible(false)
 		.withPlaceholder("Select Integer chips");
 	
 	private final Button btnSetAvailableInts1to10 = new Button("Set available ints 1-10");
