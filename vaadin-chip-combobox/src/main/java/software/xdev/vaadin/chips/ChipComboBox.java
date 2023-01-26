@@ -472,8 +472,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Sets the item label generator used by the individual {@link ChipComponent}s.
-	 *
-	 * @return
 	 */
 	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
 	{
@@ -600,8 +598,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Returns the {@link ComboBox} which contains the available items.<br/>
 	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
-	 *
-	 * @return
 	 */
 	public ComboBox<T> getCbAvailableItems()
 	{
@@ -611,8 +607,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/> NOTE: If the contents of
 	 * the {@link FlexLayout} are modified from the outside this component may break
-	 *
-	 * @return
 	 */
 	public FlexLayout getChipsContainer()
 	{
@@ -657,7 +651,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	private List<T> extractItemsFromDataProvider(final DataProvider<T, ?> dataProvider)
 	{
-		return (List<T>)dataProvider.fetch(new Query()).collect(Collectors.toList());
+		return dataProvider.fetch(new Query<>()).collect(Collectors.toList());
 	}
 	
 	/**

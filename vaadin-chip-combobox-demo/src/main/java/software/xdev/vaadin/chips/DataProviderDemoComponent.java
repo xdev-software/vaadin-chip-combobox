@@ -1,6 +1,6 @@
 package software.xdev.vaadin.chips;
 
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,7 +18,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
  */
 public class DataProviderDemoComponent extends VerticalLayout
 {
-	private static final Random RANDOM = new Random();
+	private static final SecureRandom RANDOM = new SecureRandom();
 	private final ListDataProvider<Integer> dataProvider =
 		DataProvider.ofCollection(IntStream.rangeClosed(1, 100).boxed().collect(Collectors.toList()));
 	private final ChipComboBox<Integer> intBox = new ChipComboBox<Integer>()
