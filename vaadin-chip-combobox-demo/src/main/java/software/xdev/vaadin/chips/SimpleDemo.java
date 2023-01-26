@@ -131,7 +131,7 @@ public class SimpleDemo extends HorizontalLayout
 			this.btnShowSelectedInt,
 			this.taValueChangeInt);
 		
-		this.add(this.vlLeft, this.vlRight);
+		this.add(this.vlLeft, this.vlRight, new DataProviderDemoComponent());
 		this.setWidthFull();
 	}
 	

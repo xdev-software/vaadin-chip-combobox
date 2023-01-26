@@ -42,14 +42,13 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.HasItems;
+import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.data.provider.InMemoryDataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.provider.ListDataView;
+import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.function.SerializableFunction;
-import com.vaadin.flow.function.SerializablePredicate;
 
 
 /**
@@ -622,63 +621,21 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	@Override
 	public ComboBoxDataView<T> setItems(final DataProvider<T, String> dataProvider)
 	{
-		return this.cbAvailableItems.setItems(dataProvider);
+		dataProvider.addDataProviderListener(this::dataProviderUpdated);
+		return this.cbAvailableItems.getGenericDataView();
 	}
-	
-	/**
-	 * The method is not supported for the {@link ComboBox} component, use another overloaded method with filter
-	 * converter {@link ComboBox#setItems(InMemoryDataProvider, SerializableFunction)}
-	 * <p>
-	 * Always throws an {@link UnsupportedOperationException}.
-	 * <p>
-	 * Copied from {@link ComboBox#setItems(InMemoryDataProvider)}
-	 *
-	 * @throws UnsupportedOperationException when using this method with an {@link InMemoryDataProvider}
-	 * @see ComboBox#setItems(InMemoryDataProvider, SerializableFunction)
-	 * @deprecated does not work so don't use
-	 */
-	@Deprecated
+
 	@Override
 	public ComboBoxDataView<T> setItems(
 		final InMemoryDataProvider<T> dataProvider)
 	{
-		throw new UnsupportedOperationException(
-			String.format("ComboBox does not support "
-				+ "setting a custom in-memory data provider without "
-				+ "knowledge of the rules on how to convert internal text filter "
-				+ "into a predicate applied to the data provider. Please use%n"
-				+ "setItems(InMemoryDataProvider<T>, SerializableFunction<String, "
-				+ "SerializablePredicate<T>>)"
-				+ "%noverloaded method instead"));
+		dataProvider.addDataProviderListener(this::dataProviderUpdated);
+		return this.cbAvailableItems.getGenericDataView();
 	}
 	
-	/**
-	 * Sets an in-memory data provider for the combo box to use, taking into account both in-memory filtering from data
-	 * provider and combo box's text filter.
-	 * <p>
-	 * Text filter is transformed into a predicate filter through the given filter converter. Example of filter
-	 * converter which produces the Person's name predicate:
-	 * {@code (String nameFilter) -> person -> person.getName().equalsIgnoreCase (nameFilter);}
-	 * <p>
-	 * Filtering will be handled in the client-side if the size of the data set is less than the page size. To force
-	 * client-side filtering with a larger data set (at the cost of increased network traffic), you can increase the
-	 * page size with {@link #setPageSize(int)}.
-	 * <p>
-	 * Note! Using a {@link ListDataProvider} instead of a {@link InMemoryDataProvider} is recommended to get access to
-	 * {@link ListDataView} API by using {@link #setItems(ListDataProvider)}.
-	 * <p>
-	 * Copied from {@link ComboBox#setItems(InMemoryDataProvider, SerializableFunction)}
-	 *
-	 * @param inMemoryDataProvider InMemoryDataProvider to use, not <code>null</code>
-	 * @param filterConverter      a function which converts a component's internal filter into a predicate applied to
-	 *                             the data provider
-	 * @return DataView providing information on the data
-	 */
-	public ComboBoxDataView<T> setItems(
-		final InMemoryDataProvider<T> inMemoryDataProvider,
-		final SerializableFunction<String, SerializablePredicate<T>> filterConverter)
+	private void dataProviderUpdated(final DataChangeEvent<T> tDataChangeEvent)
 	{
-		return this.cbAvailableItems.setItems(inMemoryDataProvider, filterConverter);
+		this.setItems((Collection<T>)tDataChangeEvent.getSource().fetch(new Query()).collect(Collectors.toList()));
 	}
 	
 	@Override
