@@ -44,6 +44,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.HasItems;
 import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.DataView;
 import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.data.provider.InMemoryDataProvider;
 import com.vaadin.flow.data.provider.Query;
@@ -618,26 +619,52 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		return this.chipsContainer;
 	}
 	
+	/**
+	 * Simply attaches a listener to the dataprovider if data changes and sets the provided items through
+	 * {@link #setItems(Collection)}
+	 *
+	 * @param dataProvider DataProvider instance to use, not <code>null</code>
+	 * @return the generic {@link DataView} implementation for ComboBox
+	 */
 	@Override
 	public ComboBoxDataView<T> setItems(final DataProvider<T, String> dataProvider)
 	{
 		dataProvider.addDataProviderListener(this::dataProviderUpdated);
+		this.setItems(this.extractItemsFromDataProvider(dataProvider));
 		return this.cbAvailableItems.getGenericDataView();
 	}
-
+	
+	/**
+	 * Simply attaches a listener to the dataprovider if data changes and sets the provided items through
+	 * {@link #setItems(Collection)}
+	 *
+	 * @param dataProvider DataProvider instance to use, not <code>null</code>
+	 * @return the generic {@link DataView} implementation for ComboBox
+	 */
 	@Override
 	public ComboBoxDataView<T> setItems(
 		final InMemoryDataProvider<T> dataProvider)
 	{
 		dataProvider.addDataProviderListener(this::dataProviderUpdated);
+		this.setItems(this.extractItemsFromDataProvider(dataProvider));
 		return this.cbAvailableItems.getGenericDataView();
 	}
 	
 	private void dataProviderUpdated(final DataChangeEvent<T> tDataChangeEvent)
 	{
-		this.setItems((Collection<T>)tDataChangeEvent.getSource().fetch(new Query()).collect(Collectors.toList()));
+		this.setItems(this.extractItemsFromDataProvider(tDataChangeEvent.getSource()));
 	}
 	
+	private List<T> extractItemsFromDataProvider(final DataProvider<T, ?> dataProvider)
+	{
+		return (List<T>)dataProvider.fetch(new Query()).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Gets the generic data view for the ChipComboBox.
+	 *
+	 * @return the generic {@link DataView} implementation for ChipComboBox
+	 */
 	@Override
 	public ComboBoxDataView<T> getGenericDataView()
 	{

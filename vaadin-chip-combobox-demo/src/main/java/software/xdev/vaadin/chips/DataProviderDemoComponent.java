@@ -4,7 +4,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -13,6 +12,10 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
 
 
+/**
+ * Shows how to set the ChipComboBox items through a DataProvider. In this case the data is never changed, but the
+ * filter of the DataProvider is.
+ */
 public class DataProviderDemoComponent extends VerticalLayout
 {
 	private static final Random RANDOM = new Random();
@@ -79,12 +82,6 @@ public class DataProviderDemoComponent extends VerticalLayout
 	
 	private void setAvailableInts(final int startInclusive, final int endInclusive)
 	{
-		this.dataProvider.setFilter(intToCheck -> intToCheck <= startInclusive && intToCheck >= endInclusive);
-	}
-	
-	@Override
-	protected void onAttach(final AttachEvent attachEvent)
-	{
-		this.setAvailableIntsRandom();
+		this.dataProvider.setFilter(intToCheck -> intToCheck >= startInclusive && intToCheck <= endInclusive);
 	}
 }
