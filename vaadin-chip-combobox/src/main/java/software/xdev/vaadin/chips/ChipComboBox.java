@@ -46,7 +46,7 @@ import com.vaadin.flow.function.SerializableFunction;
 
 
 /**
- * This component has a combobox with available items and displays the selected items as "chips" underneath it.<br/> It
+ * This component has a ComboBox with available items and displays the selected items as "chips" underneath it.<br/> It
  * behaves somewhat similar to a {@link Select}.
  */
 public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
