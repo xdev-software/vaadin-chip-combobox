@@ -34,9 +34,6 @@ import com.vaadin.flow.shared.Registration;
 
 /**
  * Represents a Chip shown underneath the {@link ChipComboBox}
- * 
- * @author DL
- * @author AB
  */
 public class ChipComponent<T> extends Composite<HorizontalLayout> implements
 	HasStyle,
