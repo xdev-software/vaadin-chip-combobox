@@ -41,7 +41,7 @@ public class SimpleDemo extends HorizontalLayout
 		new TextArea("ValueChangeEvent", "Change something in the chip combobox to see the result");
 	
 	private final ChipComboBox<Integer> intBox = new ChipComboBox<Integer>()
-		.withIsClearAllButtonVisible(false)
+		.withClearAllButtonVisible(false)
 		.withPlaceholder("Select Integer chips");
 	
 	private final Button btnSetAvailableInts1to10 = new Button("Set available ints 1-10");
@@ -58,13 +58,11 @@ public class SimpleDemo extends HorizontalLayout
 		this.initUI();
 		
 		this.stringBox.addValueChangeListener(ev ->
-			// @formatter:off
 			this.taValueChangeString.setValue(
 					"Value: [" + ev.getValue().stream().collect(Collectors.joining(", ")) + "] \r\n" +
 					"OldValue: [" + ev.getOldValue().stream().collect(Collectors.joining(", ")) + "] \r\n" +
 					"IsFromClient: " + ev.isFromClient()
 			)
-			// @formatter:on
 		);
 		
 		this.btnSetAvailableInts1to10.addClickListener(ev -> this.setAvailableInts(1, 10));
@@ -77,13 +75,11 @@ public class SimpleDemo extends HorizontalLayout
 		);
 		
 		this.intBox.addValueChangeListener(ev ->
-			// @formatter:off
 			this.taValueChangeInt.setValue(
 					"Value: [" + ev.getValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
 					"OldValue: [" + ev.getOldValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
 					"IsFromClient: " + ev.isFromClient()
 			)
-			// @formatter:on
 		);
 	}
 	
