@@ -1,67 +1,77 @@
-package software.xdev.vaadin.chips;
-
-/*-
- * #%L
- * ChipComboBox for Vaadin
- * %%
- * Copyright (C) 2021 XDEV Software
- * %%
+/*
+ * Copyright © 2021 XDEV Software (https://xdev.software)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * #L%
  */
+package software.xdev.vaadin.chips;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Focusable;
+import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.ItemLabelGenerator;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.binder.HasItems;
+import com.vaadin.flow.data.binder.HasValidator;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.function.SerializableFunction;
 
 
 /**
- * This component has a combobox with available items and displays the selected items as "chips" underneath it.<br/>
- * It behaves somewhat similar to a {@link Select}.
- * 
- * @author DL
- * @author AB
+ * This component has a ComboBox with available items and displays the selected items as "chips" underneath it.<br/> It
+ * behaves somewhat similar to a {@link Select}.
  */
 public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
-	HasItems<T>,
-	HasValidation,
 	HasStyle,
-	HasSize
+	Focusable<ChipComboBox<T>>,
+	HasSize,
+	HasValidation,
+	HasTheme,
+	HasLabel,
+	HasTooltip,
+	HasItems<T>,
+	HasValidator<T>
 {
 	
 	/*
 	 * UI-Components
 	 */
 	protected ComboBox<T> cbAvailableItems = new ComboBox<>();
+	protected Button btnClearAll = new Button(VaadinIcon.TRASH.create());
+	protected HorizontalLayout comboBoxContainer = new HorizontalLayout();
 	protected FlexLayout chipsContainer = new FlexLayout();
 	
 	/*
@@ -90,11 +100,17 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		chipsContainerStyle.set("flex-flow", "wrap");
 		chipsContainerStyle.set("flex-direction", "row");
 		
+		this.btnClearAll.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
+		
+		this.comboBoxContainer.setAlignItems(FlexComponent.Alignment.BASELINE);
+		this.comboBoxContainer.setWidthFull();
+		this.comboBoxContainer.add(this.cbAvailableItems, this.btnClearAll);
+		
 		this.getContent().setPadding(false);
 		this.getContent().setSpacing(false);
 		this.setSizeUndefined();
 		
-		this.getContent().add(this.cbAvailableItems, this.chipsContainer);
+		this.getContent().add(this.comboBoxContainer, this.chipsContainer);
 		
 		// Since version 2.2 the default
 		// Long words (> 18 chars) are not displayed correctly with the hardcoded width of 12em
@@ -104,6 +120,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	protected void initListeners()
 	{
 		this.cbAvailableItems.addValueChangeListener(this::onCbAvailableItemsValueChanged);
+		this.btnClearAll.addClickListener(this::onClickClearAll);
 	}
 	
 	protected void onCbAvailableItemsValueChanged(final ComponentValueChangeEvent<ComboBox<T>, T> event)
@@ -114,6 +131,16 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		}
 		
 		this.addItem(event.getValue(), event.isFromClient());
+	}
+	
+	protected void onClickClearAll(final ClickEvent<Button> event)
+	{
+		if(this.isReadOnly())
+		{
+			return;
+		}
+		
+		this.updateValues(this.getEmptyValue(), event.isFromClient());
 	}
 	
 	@Override
@@ -127,7 +154,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.selectedComponents.removeIf(comp -> !newPresentationValue.contains(comp.getItem()));
 		
 		// Find new values and build components
-		// @formatter:off
 		final Collection<T> existingValues =
 			this.selectedComponents.stream()
 				.map(ChipComponent::getItem)
@@ -151,7 +177,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 				return chipComponent;
 			})
 			.forEach(this.selectedComponents::add);
-		// @formatter:on
 		
 		this.updateUI();
 	}
@@ -172,7 +197,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Updates the underlying values (if the newValues doesn't equals the oldValue)
-	 * 
+	 *
 	 * @implNote
 	 *           This is a "workaround" for
 	 *           <a href="https://github.com/vaadin/flow/issues/11392">vaadin/flow#11392</a><br/>
@@ -197,13 +222,14 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Updates/Rebuilds the UI from the fields
-	 * 
+	 *
 	 * @implNote Will not fire a {@link ValueChangeEvent}
 	 */
 	protected void updateUI()
 	{
 		this.updateSelectedChips();
 		this.updateAvailableItems();
+		this.updateRequiredIndicatorOfCbAvailableItems();
 	}
 	
 	protected void updateSelectedChips()
@@ -219,12 +245,15 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.cbAvailableItems.setItems(availableItems);
 	}
 	
+	protected void updateRequiredIndicatorOfCbAvailableItems()
+	{
+		this.cbAvailableItems.setRequiredIndicatorVisible(this.isRequiredIndicatorVisible());
+	}
+	
 	/**
 	 * {@inheritDoc}
-	 * 
-	 * @apiNote
-	 *          Currently selected/set values that no longer exist in the new items collection
-	 *          will be removed.
+	 *
+	 * @apiNote Currently selected/set values that no longer exist in the new items collection will be removed.
 	 */
 	@Override
 	public void setItems(final Collection<T> items)
@@ -242,17 +271,11 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.updateUI();
 	}
 	
-	///////////////////////////////////////////////////////////////////////////
-	// setters + getters //
-	///////////////////////
-	
-	/*
-	 * Chips Supplier
-	 */
+	// region Chips Supplier
 	
 	/**
 	 * Returns the current supplier for creating new {@link ChipComponent ChipComponents}
-	 * 
+	 *
 	 * @return the current supplier for creating new {@link ChipComponent ChipComponents}
 	 */
 	public Function<T, ChipComponent<T>> getChipsSupplier()
@@ -261,10 +284,8 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	}
 	
 	/**
-	 * @see ChipComboBox#setChipsSupplier(Supplier)
-	 * 
-	 * @param chipsSupplier
-	 * @return the component itself
+	 * @return self
+	 * @see #setChipsSupplier(SerializableFunction)
 	 */
 	public ChipComboBox<T> withChipsSupplier(final SerializableFunction<T, ChipComponent<T>> chipsSupplier)
 	{
@@ -274,23 +295,19 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	/**
 	 * Sets the supplier for creating new {@link ChipComponent ChipComponents}
-	 * 
-	 * @param chipsSupplier
-	 *            supplier for creating new {@link ChipComponent ChipComponents}
+	 *
+	 * @param chipsSupplier supplier for creating new {@link ChipComponent ChipComponents}
 	 */
 	public void setChipsSupplier(final SerializableFunction<T, ChipComponent<T>> chipsSupplier)
 	{
 		this.chipsSupplier = Objects.requireNonNull(chipsSupplier);
 	}
 	
-	/*
-	 * All available items
-	 */
+	// endregion
+	// region All available items
 	
 	/**
 	 * Get all available items, that can potentially get selected
-	 * 
-	 * @return
 	 */
 	public List<T> getAllAvailableItems()
 	{
@@ -304,10 +321,13 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		return this;
 	}
 	
-	/*
-	 * Label (of the ComboBox)
-	 */
+	// endregion
+	// region Label (of the ComboBox)
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getLabel()
 	{
 		return this.cbAvailableItems.getLabel();
@@ -319,14 +339,17 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setLabel(final String label)
 	{
 		this.cbAvailableItems.setLabel(label);
 	}
 	
-	/*
-	 * Placeholder (of the ComboBox)
-	 */
+	// endregion
+	// region Placeholder (of the ComboBox)
 	
 	public String getPlaceholder()
 	{
@@ -344,9 +367,72 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.cbAvailableItems.setPlaceholder(placeholder);
 	}
 	
-	/*
-	 * FullComboBoxWidth
+	// endregion
+	// region ClearAll-Button
+	
+	/**
+	 * @return "Clear All Button" visibility. With this button it is possible to clear all selected items with one
+	 * click. The default value is {@code true}.
 	 */
+	public boolean isClearAllButtonVisible()
+	{
+		return this.btnClearAll.isVisible();
+	}
+	
+	/**
+	 * @return self
+	 * @see #setClearAllButtonVisible(boolean)
+	 */
+	public ChipComboBox<T> withClearAllButtonVisible(final boolean clearAllButtonVisible)
+	{
+		this.setClearAllButtonVisible(clearAllButtonVisible);
+		return this;
+	}
+	
+	/**
+	 * Sets the "Clear All Button" to visible or invisible. With this button it is possible to clear all selected items
+	 * with one click. The default value is {@code true}.
+	 *
+	 * @param clearAllButtonVisible defines the visibility of the "Clear All Button".
+	 */
+	public void setClearAllButtonVisible(final boolean clearAllButtonVisible)
+	{
+		this.btnClearAll.setVisible(clearAllButtonVisible);
+	}
+	
+	/**
+	 * @return "Clear All Button" icon. With this button it is possible to clear all selected items with one click. The
+	 * default value is {@link VaadinIcon#TRASH}.
+	 */
+	public Component getClearAllIcon()
+	{
+		return this.btnClearAll.getIcon();
+	}
+	
+	/**
+	 * @return self
+	 * @see #setClearAllIcon(Component)
+	 */
+	public ChipComboBox<T> withClearAllIcon(final Component clearAllIcon)
+	{
+		this.setClearAllIcon(clearAllIcon);
+		return this;
+	}
+	
+	/**
+	 * Sets the "Clear All Button" icon. With this button it is possible to clear all selected items with one click.
+	 * The
+	 * default value is {@link VaadinIcon#TRASH}.
+	 *
+	 * @param clearAllIcon the "Clear All Button" icon.
+	 */
+	public void setClearAllIcon(final Component clearAllIcon)
+	{
+		this.btnClearAll.setIcon(clearAllIcon);
+	}
+	
+	// endregion
+	// region FullComboBoxWidth
 	
 	public ChipComboBox<T> withFullComboBoxWidth(final boolean useFullWidth)
 	{
@@ -366,14 +452,11 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		}
 	}
 	
-	/*
-	 * Item Label generator
-	 */
+	// endregion
+	// region Item Label generator
 	
 	/**
 	 * Sets the item label generator used by the individual {@link ChipComponent}s.
-	 * 
-	 * @return
 	 */
 	public void setChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
 	{
@@ -388,7 +471,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Sets the item label generator used by the individual {@link ChipComponent}s. Equal to setChipItemLabelGenerator,
 	 * but allows in-line usage for easier component creation.
-	 * 
+	 *
 	 * @return this
 	 */
 	public ChipComboBox<T> withChipItemLabelGenerator(final ItemLabelGenerator<T> generator)
@@ -400,8 +483,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	/**
 	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
 	 * {@link ChipComponent}s.
-	 * 
-	 * @return
 	 */
 	public void setItemLabelGenerator(final ItemLabelGenerator<T> generator)
 	{
@@ -413,7 +494,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * Convenience method, which sets the item label generator used by *BOTH* {@link ComboBox} and the
 	 * {@link ChipComponent}s. Identical with setItemLabelGenerator, but allows in-line usage for easier component
 	 * creation.
-	 * 
+	 *
 	 * @return this
 	 */
 	public ChipComboBox<T> withItemLabelGenerator(final ItemLabelGenerator<T> generator)
@@ -422,10 +503,15 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		return this;
 	}
 	
+	// endregion
+	
 	/*
 	 * Other
 	 */
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setValue(final Collection<T> value)
 	{
@@ -440,6 +526,9 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		super.setValue(value);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
@@ -449,12 +538,25 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.selectedComponents.forEach(comp -> comp.setReadonly(readOnly));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
 		super.setRequiredIndicatorVisible(requiredIndicatorVisible);
 		
-		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
+		this.updateRequiredIndicatorOfCbAvailableItems();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isRequiredIndicatorVisible()
+	{
+		// The required-indicator should only be visible when it's defined and empty
+		return super.isRequiredIndicatorVisible() && this.isEmpty();
 	}
 	
 	/**
@@ -493,15 +595,32 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		return this.cbAvailableItems.isInvalid();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void focus()
+	{
+		this.getCbAvailableItems().focus();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void blur()
+	{
+		this.getCbAvailableItems().blur();
+	}
+	
 	/*
 	 * UI-Components
 	 */
 	
 	/**
-	 * Returns the {@link ComboBox} which contains the available items.<br/>
-	 * NOTE: If the contents of the {@link ComboBox} are modified from the outside this component may break
-	 * 
-	 * @return
+	 * Returns the {@link ComboBox} which contains the available items.
+	 * <p/>
+	 * NOTE: If the contents are modified from the outside this component may break
 	 */
 	public ComboBox<T> getCbAvailableItems()
 	{
@@ -509,10 +628,19 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	}
 	
 	/**
-	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).<br/>
-	 * NOTE: If the contents of the {@link FlexLayout} are modified from the outside this component may break
-	 * 
-	 * @return
+	 * Returns the {@link HorizontalLayout} which contains {@link #cbAvailableItems}.
+	 * <p/>
+	 * NOTE: If the contents are modified from the outside this component may break
+	 */
+	public HorizontalLayout getComboBoxContainer()
+	{
+		return this.comboBoxContainer;
+	}
+	
+	/**
+	 * Returns the {@link FlexLayout} with the select items (as {@link ChipComponent}s).
+	 * <p/>
+	 * NOTE: If the contents are modified from the outside this component may break
 	 */
 	public FlexLayout getChipsContainer()
 	{

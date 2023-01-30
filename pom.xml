@@ -5,13 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.xdev-software</groupId>
-	<artifactId>vaadin-chip-combobox-roott</artifactId>
-	<version>3.0.2-SNAPSHOT</version>
+	<artifactId>vaadin-chip-combobox-root</artifactId>
+	<version>3.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<organization>
 		<name>XDEV Software</name>
-		<url>https://xdev.software/en</url>
+		<url>https://xdev.software</url>
 	</organization>
 
 	<modules>
