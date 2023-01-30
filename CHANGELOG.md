@@ -1,6 +1,9 @@
 ## 3.0.2
 
-* Added clear button
+* Added a clear-all button
+* Fixed the required indicator
+  * The indicator of the "available items"-ComboBox is now only present when the wrapping ChipComboBox is empty
+  * The indicator value is now correctly returned by ``isRequiredIndicatorVisible``
 * Updated dependencies
 
 ## 3.0.1

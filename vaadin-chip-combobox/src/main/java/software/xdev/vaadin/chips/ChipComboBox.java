@@ -219,6 +219,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	{
 		this.updateSelectedChips();
 		this.updateAvailableItems();
+		this.updateRequiredIndicatorOfCbAvailableItems();
 	}
 	
 	protected void updateSelectedChips()
@@ -234,12 +235,15 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.cbAvailableItems.setItems(availableItems);
 	}
 	
+	protected void updateRequiredIndicatorOfCbAvailableItems()
+	{
+		this.cbAvailableItems.setRequiredIndicatorVisible(this.isRequiredIndicatorVisible());
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @apiNote
-	 *          Currently selected/set values that no longer exist in the new items collection
-	 *          will be removed.
+	 * @apiNote Currently selected/set values that no longer exist in the new items collection will be removed.
 	 */
 	@Override
 	public void setItems(final Collection<T> items)
@@ -515,7 +519,14 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	{
 		super.setRequiredIndicatorVisible(requiredIndicatorVisible);
 		
-		this.cbAvailableItems.setRequiredIndicatorVisible(requiredIndicatorVisible);
+		this.updateRequiredIndicatorOfCbAvailableItems();
+	}
+	
+	@Override
+	public boolean isRequiredIndicatorVisible()
+	{
+		// The required-indicator should only be visible when it's defined and empty
+		return super.isRequiredIndicatorVisible() && this.isEmpty();
 	}
 	
 	/**
