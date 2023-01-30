@@ -1,4 +1,4 @@
-## 3.0.2
+## 3.1.0
 
 * Added a clear-all button
 * Implemented more Vaadin-Mixins for better customization
