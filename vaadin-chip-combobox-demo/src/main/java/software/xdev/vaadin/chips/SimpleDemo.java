@@ -2,6 +2,7 @@ package software.xdev.vaadin.chips;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -36,6 +37,8 @@ public class SimpleDemo extends HorizontalLayout
 	private final Button btnSetValueNull = new Button("Clear (using setValue with null)");
 	private final Button btnSetInvalid = new Button("Set invalid");
 	private final Button btnClearInvalid = new Button("Clear invalid");
+	private final Button btnFocus = new Button("Focus");
+	private final Button btnBlurIn5Sec = new Button("Blur in 5 sec");
 	
 	private final TextArea taValueChangeString =
 		new TextArea("ValueChangeEvent", "Change something in the chip combobox to see the result");
@@ -101,11 +104,18 @@ public class SimpleDemo extends HorizontalLayout
 			this.stringBox.setErrorMessage("An error message");
 			this.stringBox.setInvalid(true);
 		});
-		
 		this.btnClearInvalid.addClickListener(ev -> {
 			this.stringBox.setErrorMessage(null);
 			this.stringBox.setInvalid(false);
 		});
+		
+		this.btnFocus.addClickListener(ev -> this.stringBox.focus());
+		this.btnBlurIn5Sec.addClickListener(ev ->
+			CompletableFuture.runAsync(() ->
+				ev.getSource()
+					.getUI()
+					.ifPresent(ui ->
+						ui.access(this.stringBox::blur))));
 		
 		this.taValueChangeString.setReadOnly(true);
 		
@@ -116,6 +126,7 @@ public class SimpleDemo extends HorizontalLayout
 			this.btnRestoreStringDefaults,
 			new HorizontalLayout(this.btnClear, this.btnSetValueNull),
 			new HorizontalLayout(this.btnSetInvalid, this.btnClearInvalid),
+			new HorizontalLayout(this.btnFocus, this.btnBlurIn5Sec),
 			this.taValueChangeString);
 		
 		this.vlRight.add(

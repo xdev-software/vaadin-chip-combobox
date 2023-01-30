@@ -26,8 +26,11 @@ import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Focusable;
+import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
@@ -40,7 +43,9 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.binder.HasItems;
+import com.vaadin.flow.data.binder.HasValidator;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.function.SerializableFunction;
 
@@ -50,10 +55,15 @@ import com.vaadin.flow.function.SerializableFunction;
  * behaves somewhat similar to a {@link Select}.
  */
 public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
-	HasItems<T>,
-	HasValidation,
 	HasStyle,
-	HasSize
+	Focusable<ChipComboBox<T>>,
+	HasSize,
+	HasValidation,
+	HasTheme,
+	HasLabel,
+	HasTooltip,
+	HasItems<T>,
+	HasValidator<T>
 {
 	
 	/*
@@ -314,6 +324,10 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	// endregion
 	// region Label (of the ComboBox)
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getLabel()
 	{
 		return this.cbAvailableItems.getLabel();
@@ -325,6 +339,10 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setLabel(final String label)
 	{
 		this.cbAvailableItems.setLabel(label);
@@ -491,6 +509,9 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * Other
 	 */
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setValue(final Collection<T> value)
 	{
@@ -505,6 +526,9 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		super.setValue(value);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setReadOnly(final boolean readOnly)
 	{
@@ -514,6 +538,9 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.selectedComponents.forEach(comp -> comp.setReadonly(readOnly));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setRequiredIndicatorVisible(final boolean requiredIndicatorVisible)
 	{
@@ -522,6 +549,9 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.updateRequiredIndicatorOfCbAvailableItems();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isRequiredIndicatorVisible()
 	{
@@ -563,6 +593,24 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	public boolean isInvalid()
 	{
 		return this.cbAvailableItems.isInvalid();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void focus()
+	{
+		this.getCbAvailableItems().focus();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void blur()
+	{
+		this.getCbAvailableItems().blur();
 	}
 	
 	/*
