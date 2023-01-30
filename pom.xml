@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.xdev-software</groupId>
-	<artifactId>vaadin-chip-combobox-rott</artifactId>
+	<artifactId>vaadin-chip-combobox-root</artifactId>
 	<version>3.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
