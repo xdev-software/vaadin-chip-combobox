@@ -2,6 +2,7 @@ package software.xdev.vaadin.chips;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -36,12 +37,14 @@ public class SimpleDemo extends HorizontalLayout
 	private final Button btnSetValueNull = new Button("Clear (using setValue with null)");
 	private final Button btnSetInvalid = new Button("Set invalid");
 	private final Button btnClearInvalid = new Button("Clear invalid");
+	private final Button btnFocus = new Button("Focus");
+	private final Button btnBlurIn5Sec = new Button("Blur in 5 sec");
 	
 	private final TextArea taValueChangeString =
 		new TextArea("ValueChangeEvent", "Change something in the chip combobox to see the result");
 	
 	private final ChipComboBox<Integer> intBox = new ChipComboBox<Integer>()
-		.withIsClearAllButtonVisible(false)
+		.withClearAllButtonVisible(false)
 		.withPlaceholder("Select Integer chips");
 	
 	private final Button btnSetAvailableInts1to10 = new Button("Set available ints 1-10");
@@ -58,13 +61,11 @@ public class SimpleDemo extends HorizontalLayout
 		this.initUI();
 		
 		this.stringBox.addValueChangeListener(ev ->
-			// @formatter:off
 			this.taValueChangeString.setValue(
 					"Value: [" + ev.getValue().stream().collect(Collectors.joining(", ")) + "] \r\n" +
 					"OldValue: [" + ev.getOldValue().stream().collect(Collectors.joining(", ")) + "] \r\n" +
 					"IsFromClient: " + ev.isFromClient()
 			)
-			// @formatter:on
 		);
 		
 		this.btnSetAvailableInts1to10.addClickListener(ev -> this.setAvailableInts(1, 10));
@@ -77,13 +78,11 @@ public class SimpleDemo extends HorizontalLayout
 		);
 		
 		this.intBox.addValueChangeListener(ev ->
-			// @formatter:off
 			this.taValueChangeInt.setValue(
 					"Value: [" + ev.getValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
 					"OldValue: [" + ev.getOldValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
 					"IsFromClient: " + ev.isFromClient()
 			)
-			// @formatter:on
 		);
 	}
 	
@@ -105,11 +104,18 @@ public class SimpleDemo extends HorizontalLayout
 			this.stringBox.setErrorMessage("An error message");
 			this.stringBox.setInvalid(true);
 		});
-		
 		this.btnClearInvalid.addClickListener(ev -> {
 			this.stringBox.setErrorMessage(null);
 			this.stringBox.setInvalid(false);
 		});
+		
+		this.btnFocus.addClickListener(ev -> this.stringBox.focus());
+		this.btnBlurIn5Sec.addClickListener(ev ->
+			CompletableFuture.runAsync(() ->
+				ev.getSource()
+					.getUI()
+					.ifPresent(ui ->
+						ui.access(this.stringBox::blur))));
 		
 		this.taValueChangeString.setReadOnly(true);
 		
@@ -120,6 +126,7 @@ public class SimpleDemo extends HorizontalLayout
 			this.btnRestoreStringDefaults,
 			new HorizontalLayout(this.btnClear, this.btnSetValueNull),
 			new HorizontalLayout(this.btnSetInvalid, this.btnClearInvalid),
+			new HorizontalLayout(this.btnFocus, this.btnBlurIn5Sec),
 			this.taValueChangeString);
 		
 		this.vlRight.add(

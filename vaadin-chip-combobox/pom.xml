@@ -6,7 +6,7 @@
 
 	<groupId>com.xdev-software</groupId>
 	<artifactId>vaadin-chip-combobox</artifactId>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Chip-ComboBox for Vaadin</name>
@@ -22,14 +22,14 @@
 
 	<organization>
 		<name>XDEV Software</name>
-		<url>https://xdev.software/en</url>
+		<url>https://xdev.software</url>
 	</organization>
 
 	<developers>
 		<developer>
 			<name>XDEV Software</name>
 			<organization>XDEV Software</organization>
-			<url>https://xdev.software/en</url>
+			<url>https://xdev.software</url>
 		</developer>
 	</developers>
 
@@ -49,7 +49,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency-Versions -->
-		<vaadin.version>23.3.3</vaadin.version>
+		<vaadin.version>23.3.5</vaadin.version>
 	</properties>
 
 	<dependencyManagement>
