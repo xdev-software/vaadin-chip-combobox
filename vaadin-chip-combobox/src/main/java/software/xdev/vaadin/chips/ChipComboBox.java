@@ -36,6 +36,7 @@ import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.dataview.ComboBoxDataView;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -45,13 +46,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.shared.HasTooltip;
 import com.vaadin.flow.data.binder.HasItems;
+import com.vaadin.flow.data.binder.HasValidator;
 import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.DataView;
 import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.data.provider.InMemoryDataProvider;
 import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.binder.HasValidator;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.function.SerializableFunction;
 
@@ -68,7 +69,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	HasTheme,
 	HasLabel,
 	HasTooltip,
-	HasItems<T>,,
+	HasItems<T>,
 	HasDataView<T, String, ComboBoxDataView<T>>,
 	HasValidator<T>
 {
@@ -80,7 +81,6 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	protected Button btnClearAll = new Button(VaadinIcon.TRASH.create());
 	protected HorizontalLayout comboBoxContainer = new HorizontalLayout();
 	protected FlexLayout chipsContainer = new FlexLayout();
-	protected Button btnClearAll = new Button(VaadinIcon.TRASH.create());
 	
 	/*
 	 * Suppliers / Configuration
