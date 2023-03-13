@@ -1,5 +1,7 @@
-## 3.1.0
+## 3.1.1
+* Updated dependencies
 
+## 3.1.0
 * Added a clear-all button
 * Implemented more Vaadin-Mixins for better customization
 * Fixed the required indicator
@@ -8,12 +10,10 @@
 * Updated dependencies
 
 ## 3.0.1
-
 * Updated dependencies
   * Vaadin 23.2
 
 ## 3.0.0
-
 ⚠️<i>This release contains breaking changes</i>
 
 * Adds support for Vaadin 23+, drops support for Vaadin 14<br/>
