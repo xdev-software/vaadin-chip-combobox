@@ -1,8 +1,8 @@
-[![Published on Vaadin Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/chip-combobox-for-vaadin)
-[![Latest version](https://img.shields.io/maven-central/v/com.xdev-software/vaadin-chip-combobox)](https://mvnrepository.com/artifact/com.xdev-software/vaadin-chip-combobox)
+[![Published on Vaadin Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0?logo=vaadin)](https://vaadin.com/directory/component/chip-combobox-for-vaadin)
+[![Latest version](https://img.shields.io/maven-central/v/com.xdev-software/vaadin-chip-combobox?logo=apache%20maven)](https://mvnrepository.com/artifact/com.xdev-software/vaadin-chip-combobox)
 [![Build](https://img.shields.io/github/actions/workflow/status/xdev-software/vaadin-chip-combobox/checkBuild.yml?branch=develop)](https://github.com/xdev-software/vaadin-chip-combobox/actions/workflows/checkBuild.yml?query=branch%3Adevelop)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=xdev-software_vaadin-chip-combobox&metric=alert_status)](https://sonarcloud.io/dashboard?id=xdev-software_vaadin-chip-combobox)
-![Vaadin 23+](https://img.shields.io/badge/Vaadin%20Platform/Flow-23+-00b4f0.svg)
+![Vaadin 24+](https://img.shields.io/badge/Vaadin%20Platform/Flow-24+-00b4f0)
 
 ## vaadin-chip-combobox
 A ComboBox with Chips/Chip Components for Vaadin Flow
@@ -17,7 +17,8 @@ A ComboBox with Chips/Chip Components for Vaadin Flow
 
 | Vaadin version | ChipComboBox version |
 | --- | --- |
-| Vaadin 23+ (latest) | ``3+`` |
+| Vaadin 24+ (latest) | ``4+`` |
+| Vaadin 23 | ``3.x`` |
 | Vaadin 14 (LTS - former release model) | ``2.x`` |
 
 
