@@ -1,7 +1,7 @@
 package software.xdev.vaadin.chips;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,7 +23,7 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Chip-Combobox Demo")
 public class SimpleDemo extends HorizontalLayout
 {
-	private static final Random RANDOM = new Random();
+	private static final SecureRandom RANDOM = new SecureRandom();
 	
 	private final VerticalLayout vlLeft = new VerticalLayout();
 	private final VerticalLayout vlRight = new VerticalLayout();
@@ -138,7 +138,7 @@ public class SimpleDemo extends HorizontalLayout
 			this.btnShowSelectedInt,
 			this.taValueChangeInt);
 		
-		this.add(this.vlLeft, this.vlRight);
+		this.add(this.vlLeft, this.vlRight, new DataProviderDemoComponent());
 		this.setWidthFull();
 	}
 	
