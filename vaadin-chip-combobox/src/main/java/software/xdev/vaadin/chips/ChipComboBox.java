@@ -17,10 +17,12 @@ package software.xdev.vaadin.chips;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.AbstractCompositeField;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
@@ -54,7 +56,8 @@ import com.vaadin.flow.function.SerializableFunction;
  * This component has a ComboBox with available items and displays the selected items as "chips" underneath it.<br/> It
  * behaves somewhat similar to a {@link Select}.
  */
-public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Collection<T>> implements
+public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, ChipComboBox<T>, Set<T>>
+	implements
 	HasStyle,
 	Focusable<ChipComboBox<T>>,
 	HasSize,
@@ -88,10 +91,27 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	public ChipComboBox()
 	{
-		super(new ArrayList<>());
+		this(new HashSet<>());
+	}
+	
+	public ChipComboBox(final Set<T> defaultValue)
+	{
+		super(defaultValue);
 		
 		this.initUI();
 		this.initListeners();
+	}
+	
+	public ChipComboBox(final String label)
+	{
+		this();
+		this.withLabel(label);
+	}
+	
+	public ChipComboBox(final String label, final Set<T> defaultValue)
+	{
+		this(defaultValue);
+		this.withLabel(label);
 	}
 	
 	protected void initUI()
@@ -144,7 +164,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	}
 	
 	@Override
-	protected void setPresentationValue(final Collection<T> newPresentationValue)
+	protected void setPresentationValue(final Set<T> newPresentationValue)
 	{
 		/*
 		 * Update the component list
@@ -157,7 +177,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		final Collection<T> existingValues =
 			this.selectedComponents.stream()
 				.map(ChipComponent::getItem)
-				.collect(Collectors.toList());
+				.toList();
 		
 		newPresentationValue.stream()
 			.filter(v -> !existingValues.contains(v))
@@ -183,14 +203,14 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	
 	protected void addItem(final T item, final boolean isFromClient)
 	{
-		final List<T> values = new ArrayList<>(this.getValue());
+		final Set<T> values = new LinkedHashSet<>(this.getValue());
 		values.add(item);
 		this.updateValues(values, isFromClient);
 	}
 	
 	protected void removeItem(final T item, final boolean isFromClient)
 	{
-		final List<T> values = new ArrayList<>(this.getValue());
+		final Set<T> values = new LinkedHashSet<>(this.getValue());
 		values.remove(item);
 		this.updateValues(values, isFromClient);
 	}
@@ -206,12 +226,10 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 *           <li>The {@link ValueChangeEvent} is fired before the UI is updated</li>
 	 *           <li>No internal data management like in {@link AbstractFieldSupport}</li>
 	 *           </ul>
-	 * @param newValues
-	 * @param isFromClient
 	 */
-	protected void updateValues(final Collection<T> newValues, final boolean isFromClient)
+	protected void updateValues(final Set<T> newValues, final boolean isFromClient)
 	{
-		final Collection<T> oldValue = this.getValue();
+		final Set<T> oldValue = this.getValue();
 		this.setModelValue(newValues, isFromClient);
 		
 		if(!this.valueEquals(oldValue, newValues))
@@ -263,7 +281,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 		this.allAvailableItems.addAll(items);
 		
 		// Remove selected values that are not in allAvailableItems
-		final Collection<T> values = new ArrayList<>(this.getValue());
+		final Set<T> values = new LinkedHashSet<>(this.getValue());
 		values.removeIf(v -> !this.allAvailableItems.contains(v));
 		this.updateValues(values, false);
 		
@@ -513,7 +531,7 @@ public class ChipComboBox<T> extends AbstractCompositeField<VerticalLayout, Chip
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setValue(final Collection<T> value)
+	public void setValue(final Set<T> value)
 	{
 		// Cannot set a null value.
 		// Using the clear-method to reset the component's value

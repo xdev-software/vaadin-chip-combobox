@@ -1,7 +1,7 @@
 package software.xdev.vaadin.chips;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.button.Button;
@@ -19,8 +19,7 @@ public class BinderDemo extends VerticalLayout
 	
 	public BinderDemo()
 	{
-		final ChipComboBox<String> ccb = new ChipComboBox<String>()
-			.withLabel("Test");
+		final ChipComboBox<String> ccb = new ChipComboBox<>("Test");
 		ccb.setItems("A", "B", "C");
 		
 		this.binder.forField(ccb)
@@ -33,25 +32,25 @@ public class BinderDemo extends VerticalLayout
 	@Override
 	protected void onAttach(final AttachEvent attachEvent)
 	{
-		this.binder.readBean(new TestBean(new ArrayList<>()));
+		this.binder.readBean(new TestBean(new LinkedHashSet<>()));
 	}
 	
 	public static class TestBean
 	{
-		private Collection<String> strings;
+		private Set<String> strings;
 		
-		public TestBean(final Collection<String> strings)
+		public TestBean(final Set<String> strings)
 		{
 			super();
 			this.strings = strings;
 		}
 		
-		public Collection<String> getStrings()
+		public Set<String> getStrings()
 		{
 			return this.strings;
 		}
 		
-		public void setStrings(final Collection<String> strings)
+		public void setStrings(final Set<String> strings)
 		{
 			this.strings = strings;
 		}
