@@ -8,7 +8,7 @@
 A ComboBox with Chips/Chip Components for Vaadin Flow
 
 > **Note**
-> This component will be deprecated in favor of the official Vaadin ``Multi-Select Combo Box``.
+> This component will be deprecated in favor of the official Vaadin ``Multi-Select Combo Box``.<br/>
 > ``Multi-Select Combo Box`` behaves very similar to this component and was first introduced in Vaadin 23.2
 
 ![demo](assets/demo.png)
