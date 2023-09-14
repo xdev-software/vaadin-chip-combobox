@@ -1,3 +1,8 @@
+## 4.1.0
+* Use ``Set`` instead of ``Collection`` so that empty value detection works correctly #186
+* Replaced ``Label`` with ``Span`` to remove deprecation warnings
+* Added deprecation notice 
+
 ## 4.0.0
 ⚠️<i>This release contains breaking changes</i>
 

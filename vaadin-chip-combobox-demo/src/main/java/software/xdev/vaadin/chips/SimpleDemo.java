@@ -2,6 +2,7 @@ package software.xdev.vaadin.chips;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -144,7 +145,7 @@ public class SimpleDemo extends HorizontalLayout
 	
 	private void restoreStringDefaults()
 	{
-		this.stringBox.setValue(Arrays.asList("Java", "Kotlin", "C#", "Python"));
+		this.stringBox.setValue(Set.of("Java", "Kotlin", "C#", "Python"));
 	}
 	
 	private void setAvailableIntsRandom()

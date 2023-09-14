@@ -6,7 +6,7 @@
 
 	<groupId>com.xdev-software</groupId>
 	<artifactId>vaadin-chip-combobox</artifactId>
-	<version>4.0.1-SNAPSHOT</version>
+	<version>4.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Chip-ComboBox for Vaadin</name>
@@ -49,7 +49,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Dependency-Versions -->
-		<vaadin.version>24.0.5</vaadin.version>
+		<vaadin.version>24.1.9</vaadin.version>
 	</properties>
 
 	<dependencyManagement>

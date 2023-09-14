@@ -24,7 +24,7 @@ import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -43,7 +43,7 @@ public class ChipComponent<T> extends Composite<HorizontalLayout> implements
 	protected ItemLabelGenerator<T> itemLabelGenerator = Object::toString;
 	
 	protected final Button btnDelete = new Button(VaadinIcon.CLOSE_CIRCLE.create());
-	protected final Label label = new Label();
+	protected final Span label = new Span();
 	
 	public ChipComponent(final T item)
 	{
@@ -92,7 +92,7 @@ public class ChipComponent<T> extends Composite<HorizontalLayout> implements
 	}
 	
 	/**
-	 * Updates the text of the {@link Label} from the integrated {@link ItemLabelGenerator}
+	 * Updates the text of the {@link Span} from the integrated {@link ItemLabelGenerator}
 	 */
 	public void updateTextFromItemLabelGenerator()
 	{
