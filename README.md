@@ -33,9 +33,9 @@ A ComboBox with Chips/Chip Components for Vaadin Flow
 
 
 <details>
-   <summary>Show example</summary>
-
-   ![demo](assets/demo.gif)
+  <summary>Show example</summary>
+  
+  ![demo](assets/demo.avif)
 </details>
 
 ## Support
