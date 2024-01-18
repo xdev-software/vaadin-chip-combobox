@@ -1,3 +1,7 @@
+## 4.1.1
+* ⚠️ GroupId changed from ``com.xdev-software`` to ``software.xdev``
+* Updated dependencies
+
 ## 4.1.0
 * Use ``Set`` instead of ``Collection`` so that empty value detection works correctly #186
 * Replaced ``Label`` with ``Span`` to remove deprecation warnings

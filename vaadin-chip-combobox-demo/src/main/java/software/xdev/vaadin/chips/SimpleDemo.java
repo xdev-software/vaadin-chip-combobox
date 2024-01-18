@@ -1,6 +1,6 @@
 package software.xdev.vaadin.chips;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -57,17 +57,16 @@ public class SimpleDemo extends HorizontalLayout
 	private final TextArea taValueChangeInt =
 		new TextArea("ValueChangeEvent", "Change something in the chip combobox to see the result");
 	
+	@SuppressWarnings("checkstyle:MagicNumber")
 	public SimpleDemo()
 	{
 		this.initUI();
 		
-		this.stringBox.addValueChangeListener(ev ->
-			this.taValueChangeString.setValue(
-					"Value: [" + ev.getValue().stream().collect(Collectors.joining(", ")) + "] \r\n" +
-					"OldValue: [" + ev.getOldValue().stream().collect(Collectors.joining(", ")) + "] \r\n" +
-					"IsFromClient: " + ev.isFromClient()
-			)
-		);
+		this.stringBox.addValueChangeListener(ev -> this.taValueChangeString.setValue(
+			"Value: [" + String.join(", ", ev.getValue()) + "] \r\n"
+				+ "OldValue: [" + String.join(", ", ev.getOldValue()) + "] \r\n"
+				+ "IsFromClient: " + ev.isFromClient()
+		));
 		
 		this.btnSetAvailableInts1to10.addClickListener(ev -> this.setAvailableInts(1, 10));
 		this.btnSetAvailableInts5to15.addClickListener(ev -> this.setAvailableInts(5, 15));
@@ -75,18 +74,22 @@ public class SimpleDemo extends HorizontalLayout
 		this.btnSetRandomAvailableInts.addClickListener(ev -> this.setAvailableIntsRandom());
 		
 		this.btnShowSelectedInt.addClickListener(ev ->
-			Notification.show("Selected: " + this.intBox.getValue().stream().map(Object::toString).collect(Collectors.joining(", ")))
+			Notification.show("Selected: " + this.intBox.getValue().stream()
+				.map(Object::toString)
+				.collect(Collectors.joining(", ")))
 		);
 		
-		this.intBox.addValueChangeListener(ev ->
-			this.taValueChangeInt.setValue(
-					"Value: [" + ev.getValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
-					"OldValue: [" + ev.getOldValue().stream().map(Object::toString).collect(Collectors.joining(", ")) + "] \r\n" +
-					"IsFromClient: " + ev.isFromClient()
-			)
-		);
+		this.intBox.addValueChangeListener(ev -> this.taValueChangeInt.setValue(
+			"Value: [" + ev.getValue().stream().map(Object::toString).collect(Collectors.joining(", "))
+				+ "] \r\n"
+				+ "OldValue: ["
+				+ ev.getOldValue().stream().map(Object::toString).collect(Collectors.joining(", "))
+				+ "] \r\n"
+				+ "IsFromClient: " + ev.isFromClient()
+		));
 	}
 	
+	@SuppressWarnings("checkstyle:MagicNumber")
 	private void initUI()
 	{
 		this.stringBox.setWidthFull();
@@ -158,14 +161,14 @@ public class SimpleDemo extends HorizontalLayout
 	
 	private void setAvailableInts(final int startInclusive, final int endInclusive)
 	{
-		this.intBox.withAllAvailableItems(IntStream.rangeClosed(startInclusive, endInclusive).boxed().collect(Collectors.toList()));
+		this.intBox.withAllAvailableItems(IntStream.rangeClosed(startInclusive, endInclusive).boxed().toList());
 	}
 	
 	@Override
 	protected void onAttach(final AttachEvent attachEvent)
 	{
-		this.stringBox
-			.withAllAvailableItems(Arrays.asList("Java", "TypeScript", "Shell", "JavaScript", "Kotlin", "C#", "Python"));
+		this.stringBox.withAllAvailableItems(
+			List.of("Java", "TypeScript", "Shell", "JavaScript", "Kotlin", "C#", "Python"));
 		
 		this.setAvailableIntsRandom();
 		
