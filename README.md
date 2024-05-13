@@ -25,12 +25,10 @@ A ComboBox with Chips/Chip Components for Vaadin Flow
 | Vaadin 23 | ``3.x`` |
 | Vaadin 14 (LTS - former release model) | ``2.x`` |
 
-
 ## Run the Demo
 * Checkout the repo
 * Run ``mvn install && mvn -f vaadin-chip-combobox-demo spring-boot:run``
 * Open http://localhost:8080
-
 
 <details>
   <summary>Show example</summary>
