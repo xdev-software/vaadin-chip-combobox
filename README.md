@@ -1,3 +1,7 @@
+> **Note**
+> This component was deprecated in favor of the official [Vaadin ``Multi-Select Combo Box``](https://vaadin.com/docs/latest/components/multi-select-combo-box).<br/>
+> ``Multi-Select Combo Box`` behaves very similar to this component and was first introduced in Vaadin 23.2
+
 [![Published on Vaadin Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0?logo=vaadin)](https://vaadin.com/directory/component/chip-combobox-for-vaadin)
 [![Latest version](https://img.shields.io/maven-central/v/software.xdev/vaadin-chip-combobox?logo=apache%20maven)](https://mvnrepository.com/artifact/software.xdev/vaadin-chip-combobox)
 [![Build](https://img.shields.io/github/actions/workflow/status/xdev-software/vaadin-chip-combobox/checkBuild.yml?branch=develop)](https://github.com/xdev-software/vaadin-chip-combobox/actions/workflows/checkBuild.yml?query=branch%3Adevelop)
@@ -6,10 +10,6 @@
 
 ## vaadin-chip-combobox
 A ComboBox with Chips/Chip Components for Vaadin Flow
-
-> **Note**
-> This component will be deprecated in favor of the official [Vaadin ``Multi-Select Combo Box``](https://vaadin.com/docs/latest/components/multi-select-combo-box).<br/>
-> ``Multi-Select Combo Box`` behaves very similar to this component and was first introduced in Vaadin 23.2
 
 ![demo](assets/demo.png)
 ![demo2](assets/demo2.png)
