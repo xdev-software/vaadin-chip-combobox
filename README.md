@@ -1,4 +1,4 @@
-> **Note**
+> [!Note]
 > This component was deprecated in favor of the official [Vaadin ``Multi-Select Combo Box``](https://vaadin.com/docs/latest/components/multi-select-combo-box).<br/>
 > ``Multi-Select Combo Box`` behaves very similar to this component and was first introduced in Vaadin 23.2
 
